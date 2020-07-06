@@ -1,7 +1,7 @@
 {
-  "name": "@{package-slug}",
+  "name": "@kevinbatdorf/alpine-inline-devtools",
   "version": "0.1.0",
-  "description": "{package-description}",
+  "description": "An easy way to monitor your state while developing with Alpine",
   "main": "dist/index.js",
   "publishConfig": {
     "access": "public"
@@ -16,17 +16,17 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/{package-slug}.git"
+    "url": "git+https://github.com/kevinbatdorf/alpine-inline-devtools.git"
   },
   "keywords": [
     "alpinejs"
   ],
-  "author": "{author-name}",
+  "author": "Kevin Batdorf",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/{package-slug}/issues"
+    "url": "https://github.com/kevinbatdorf/alpine-inline-devtools/issues"
   },
-  "homepage": "https://github.com/{package-slug}#readme",
+  "homepage": "https://github.com/kevinbatdorf/alpine-inline-devtools#readme",
   "devDependencies": {
     "alpinejs": "^2.4.1",
     "cross-env": "^7.0.2",

@@ -10,7 +10,10 @@
 
 <body class="flex items-center justify-center">
 	
-	<div x-data="{}"></div>
+	<div x-data="{color: 'green'}"></div>
+
+	<!-- Dev tools -->
+	<div id="alpine-devtools" x-data="devtools()" x-show="alpines.length" x-init="start()"></div>
 
 	<script src="http://localhost:35729/livereload.js"></script>
 </body>
