@@ -59,14 +59,14 @@ window.devtools = function (position) {
 			return typeof value
 		},
 		getItem(key, value) {
-			return `<li>
+			return `<span>
 				<span style="color:#4aea8b" class="text-serif">
 					<span class="inline-block" style="min-width:1rem">${key}</span>
 					<span class="text-white">:</span>
 					<span style="color:#8ac0cf" class="bg-gray-800 px-1 text-xs">${this.getType(value)}</span>
 				</span>
 				<span style="color:#d8dee9">${this.getType(value) === 'string' ? this.escapeHTML(this.getValue(value)) : this.getValue(value)}</span>
-			</li>`
+			</span>`
 		},
 		getValue(value) {
 			if (this.getType(value) == 'boolean') {
@@ -79,11 +79,13 @@ window.devtools = function (position) {
 				return `"${value}"`
 			}
 			if (this.getType(value) == 'array') {
+				if (!value) return value
 				return Object.entries(value).map(([...item]) => {
 					return `<ul class="ml-4">${this.getItem(item[0], item[1])}</ul>`
 				}).join('')
 			}
 			if (this.getType(value) == 'object') {
+				if (!value) return value
 				return Object.entries(value).map(([...item]) => {
 					return `<ul class="ml-4">${this.getItem(item[0], item[1])}</ul>`
 				}).join('')
@@ -103,7 +105,7 @@ window.devtools = function (position) {
 		insertHTML() {
 			this.$el.innerHTML = `<button
 				x-show.immediate="!show"
-				style="background-color:rgb(138, 192, 207);border-color:#d8dee9"
+				style="background-color:rgb(138, 192, 207);border-color:#d8dee9;min-width:0;"
 				:class="position + '-0'"
 				class="border border-3 bottom-0 fixed focus:outline-none font-black h-10 mb-3 mx-4 rounded-full text-gray-900 hover:text-white shadow-2xl text w-10"
 				@click="show = true">A</button>
@@ -119,20 +121,20 @@ window.devtools = function (position) {
 				x-transition:leave="transition ease-out duration-300"
 				x-transition:leave-start="transform translate-y-0 opacity-100"
 				x-transition:leave-end="transform translate-y-2 opacity-0">
-				<button class="absolute top-0 right-0 mr-2 bg-gray-900 font-mono focus:outline-none" @click="show = false">x</button>
+				<button style="min-width:0" class="absolute top-0 right-0 mr-2 bg-gray-900 font-mono focus:outline-none" @click="show = false">x</button>
 				<div
 					style="max-height:70vh"
 					class="divide-y-2 divide-gray-700 space-y-5 -mt-5 mb-5 px-3 overflow-scroll">
 					<template x-for="alpine of alpines">
 						<div class="pt-5">
-							<h1 x-text="computeTitle(alpine)" class="mb-1 font-extrabold" style="color:#d8dee9"></h1>
+							<div x-text="computeTitle(alpine)" class="mb-1 font-extrabold" style="color:#d8dee9"></div>
 							<template x-if="!getAlpineData(alpine).length"><p class="text-sm">No data found</p></template>
 							<template x-for="[key, value] of getAlpineData(alpine)">
-								<ul
+								<div
 									class="leading-normal"
 									x-html="getItem(key, value)"
 									x-show="getType(value) !== 'function'">
-								</ul>
+								</div>
 							</template>
 						</div>
 					</template>
