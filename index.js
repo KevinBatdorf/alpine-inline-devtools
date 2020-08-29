@@ -57,19 +57,28 @@ window.alpineDevTools = function(position) {
             this.windowRef.document.title = 'Alpine DevTools'
             this.windowRef.alpines = this.alpines
 
-            const alpineScript = this.windowRef.document.createElement('script')
-            alpineScript.src = 'https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2.x.x/dist/alpine.min.js'
-            this.windowRef.document.head.appendChild(alpineScript)
+            if (!this.windowRef.document.getElementById('alpine-devtools-script')) {
+                const alpineScript = this.windowRef.document.createElement('script')
+                alpineScript.id = 'alpine-devtools-script'
+                alpineScript.src = 'https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2.x.x/dist/alpine.min.js'
+                this.windowRef.document.head.appendChild(alpineScript)
+            }
 
-            const tailwindCSS = this.windowRef.document.createElement('link')
-            tailwindCSS.href = 'https://unpkg.com/tailwindcss@^1.0/dist/tailwind.min.css'
-            tailwindCSS.rel = 'stylesheet'
-            this.windowRef.document.head.appendChild(tailwindCSS)
+            if (!this.windowRef.document.getElementById('tailwindcss-devtools-style')) {
+                const tailwindCSS = this.windowRef.document.createElement('link')
+                tailwindCSS.id = 'tailwindcss-devtools-style'
+                tailwindCSS.href = 'https://unpkg.com/tailwindcss@^1.0/dist/tailwind.min.css'
+                tailwindCSS.rel = 'stylesheet'
+                this.windowRef.document.head.appendChild(tailwindCSS)
+            }
 
-            const devtoolsScript = this.windowRef.document.createElement('script')
-            devtoolsScript.setAttribute('type', 'text/javascript')
-            devtoolsScript.src = document.getElementById('alpine-devtools-script').src
-            this.windowRef.document.head.appendChild(devtoolsScript)
+            if (!this.windowRef.document.getElementById('devtools-script')) {
+                const devtoolsScript = this.windowRef.document.createElement('script')
+                devtoolsScript.id = 'devtools-script'
+                devtoolsScript.setAttribute('type', 'text/javascript')
+                devtoolsScript.src = document.getElementById('alpine-devtools-script').src
+                this.windowRef.document.head.appendChild(devtoolsScript)
+            }
 
             this.setUpPopupData()
         },
