@@ -235,5 +235,3 @@ window.deferLoadingAlpine = function (callback) {
     alpine(callback)
     alpineDevTools()
 }
-
-export default alpineDevTools
