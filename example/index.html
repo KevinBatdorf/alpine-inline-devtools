@@ -3,17 +3,229 @@
 <head>
 	<script type="module" src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2.x.x/dist/alpine.min.js"></script>
 	<script nomodule src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2.x.x/dist/alpine-ie11.min.js" defer></script>
-	<script src="../dist/index.js"></script>
+	<script id="alpine-devtools-script" src="../dist/index.js"></script>
 	<link href="https://unpkg.com/tailwindcss@^1.0/dist/tailwind.min.css" rel="stylesheet">
 
 </head>
 
-<body class="flex items-center justify-center">
-	
-	<div x-data="{color: 'green'}"></div>
+<body class="">
+    <div class="min-h-screen justify-center flex p-16 bg-blue-200">
+        <div>
+        <!-- Taken from https://codepen.io/KevinBatdorf/pen/PoZeBEv?editors=1010 -->
 
-	<!-- Dev tools -->
-	<div id="alpine-devtools" x-data="devtools()" x-show="alpines.length" x-init="start()"></div>
+        <p class="mb-10 text-center">Drag & drop or press the menu icon button <br>(or use your tab key)</p>
 
+        <div class="pt-6 pb-4 bg-indigo-500 rounded-lg shadow-xl max-w-sm">
+        <h1 id="agenda-title" class="text-white font-extrabold text-lg p-6 pt-0">What's the agenda for today?</h1>
+
+        <ul
+            aria-labelledBy="agenda-title"
+            x-title="Sorting Demo"
+            x-data="dragAndSortHandler(items)"
+            @keydown.window.tab="usedKeyboard = true"
+            @dragenter.stop.prevent="dropcheck++"
+            @dragleave="dropcheck--;dropcheck || rePositionPlaceholder()"
+            @dragover.stop.prevent
+            @dragend="revertState()"
+            @drop.stop.prevent="resetState()">
+            <template x-for="(item, index) in items" :key="index">
+                <li
+                    :x-ref="index"
+                    @dragstart="dragstart($event)"
+                    @dragend="$event.target.setAttribute('draggable', false)"
+                    @dragover="updateListOrder($event)"
+                    draggable="false"
+                    class="border-b border-transparent"
+                    :class="{
+                        'opacity-25': indexBeingDragged == index,
+                    }">
+                    <!-- Pointer events are disabled while dragging, otherwise drag events fire on child elements -->
+                    <div class="bg-indigo-300 p-6 flex justify-between"
+                         :class="{'pointer-events-none': indexBeingDragged}">
+                        <p x-text="item.name"></p>
+                        <div class="relative" aria-haspopup="true">
+                            <!-- Lots of events are here as it combines click drag, click, and keyboard events -->
+                            <button
+                                aria-label="Sorting menu"
+                                @mousedown="setParentDraggable(event)"
+                                @mouseup="openContextMenu($event)"
+                                @click="openContextMenu($event)"
+                                @click.away.stop.prevent="closeAllContextMenus()"
+                                @keydown.space="openContextMenu($event)"
+                                @keyup.stop.prevent
+                                @keydown.arrow-down="highlightFirstContextButton($event)"
+                                @keydown.tab="closeAllContextMenus()"
+                                @dragover.stop.prevent
+                                :class="{'focus:outline-none': !usedKeyboard}">
+                                <svg
+                                    @click.stop
+                                    @dragover.stop.prevent
+                                    role="img"
+                                    class="block w-6 text-indigo-500"
+                                    viewBox="0 0 20 20"
+                                    fill="currentColor">
+                                    <path
+                                         fill-rule="evenodd"
+                                         d="M3 5a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 10a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 15a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z"
+                                         clip-rule="evenodd"/>
+                                </svg>
+                            </button>
+                            <ul
+                                role="menu"
+                                :aria-expanded="(openedContextMenu == index).toString()"
+                                x-show="openedContextMenu == index"
+                                x-transition:enter="transition ease-in duration-100"
+                                x-transition:enter-start="transform opacity-75 -translate-y-1"
+                                x-transition:leave-end="transform -translate-y-1 opacity-0"
+                                class="absolute w-32 bg-indigo-500 py-2 -mt-3 left-0 transform -translate-x-12 z-50 shadow-lg rounded text-sm">
+                                <li role="menuitem">
+                                    <button
+                                        @keydown.arrow-down="highlightNextContextMenuItem($event)"
+                                        @keydown.tab="closeAllContextMenus()"
+                                        tabindex="-1"
+                                        @click="index && move(index, index - 1)"
+                                        class="text-left w-full pl-4 hover:bg-indigo-400"
+                                        :class="{'focus:outline-none': !usedKeyboard}"
+                                        >
+                                        Move up
+                                    </button>
+                                </li>
+                                <!-- hard coded for two options. If you need more then you need a new method -->
+                                <li role="menuitem">
+                                    <button
+                                        @keydown.arrow-up="highlightPreviousContextMenuItem($event)"
+                                        @keydown.tab="closeAllContextMenus()"
+                                        tabindex="-1"
+                                        @click="(index + 1 < items.length) && move(index + 1, index)"
+                                        class="text-left w-full pl-4 hover:bg-indigo-400"
+                                        :class="{'focus:outline-none': !usedKeyboard}">
+                                        Move down
+                                    </button>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </li>
+            </template>
+        </ul>
+
+
+        </div>
+        </div>
+ </div>
+    <script>
+        const items = [
+        {
+            name: 'Create some awesome tools',
+        },
+        {
+            name: 'Maybe get some lunch',
+        },
+        {
+            name: 'Have another coffee, or two',
+        },
+        {
+            name: 'Take over the world',
+        },
+        {
+            name: 'Repeat all of the above',
+        },
+    ]
+    function dragAndSortHandler(items) {
+        return {
+            // Keeps track of when we leave the dropzone
+            // Otherwise child events will trigger @dragloave
+            dropcheck: 0,
+            usedKeyboard: false,
+            originalIndexBeingDragged: null,
+            indexBeingDragged: null,
+            indexBeingDraggedOver: null,
+            openedContextMenu: null,
+            items: items,
+            preDragOrder: items,
+            dragstart(event) {
+                if (this.openedContextMenu) {
+                    // Without this the drag will show the context menu
+                    return this.closeContextMenu()
+                }
+                // Store a copy for when we drag out of range
+                this.preDragOrder = [...this.items]
+                // The index is continuously updated to reorder live and also keep a placeholder
+                this.indexBeingDragged = event.target.getAttribute('x-ref')
+                // The original is needed for then the drag leaves the container
+                this.originalIndexBeingDragged = event.target.getAttribute('x-ref')
+                // Not entirely sure this is needed but moz recommended it (?)
+                event.dataTransfer.dropEffect = "copy"
+            },
+            updateListOrder(event) {
+                // This fires every time you drag over another list item
+                // It reorders the items array but maintains the placeholder
+                if (this.indexBeingDragged) {
+                    this.indexBeingDraggedOver = event.target.getAttribute('x-ref')
+                    let from = this.indexBeingDragged
+                    let to = this.indexBeingDraggedOver
+
+                    if (this.indexBeingDragged == to) return
+                    if (from == to) return
+
+                    this.move(from, to)
+                    this.indexBeingDragged = to
+                }
+            },
+            // These are needed for the handle effect
+            setParentDraggable(event) {
+                event.target.closest('li').setAttribute('draggable', true)
+            },
+            setParentNotDraggable(event) {
+                event.target.closest('li').setAttribute('draggable', false)
+            },
+            resetState() {
+                this.dropcheck = 0
+                this.indexBeingDragged = null
+                this.preDragOrder = [...this.items]
+                this.indexBeingDraggedOver = null
+                this.originalIndexBeingDragged = null
+            },
+            // This acts as a cancelled event, when the item is dropped outside the container
+            revertState() {
+                this.items = this.preDragOrder.length ? this.preDragOrder : this.items
+                this.resetState()
+            },
+            // Just repositions the placeholder when we move out of range of the container
+            rePositionPlaceholder() {
+                this.items = [...this.preDragOrder]
+                this.indexBeingDragged = this.originalIndexBeingDragged
+            },
+            move(from, to) {
+                let items = this.items
+                if (to >= items.length) {
+                    let k = to - items.length + 1
+                    while (k--) {
+                        items.push(undefined)
+                    }
+                }
+                items.splice(to, 0, items.splice(from, 1)[0])
+                this.items = items
+            },
+            // THe rest are just for adding better UX to the context menu
+            openContextMenu(event) {
+                this.openedContextMenu = event.target.closest('li').__x_for_key
+            },
+            closeAllContextMenus() {
+                this.openedContextMenu = null
+            },
+            highlightFirstContextButton($event) {
+                event.target.nextElementSibling.querySelector('button').focus()
+            },
+            highlightNextContextMenuItem(event) {
+                event.target.closest('li').nextElementSibling.querySelector('button').focus()
+            },
+            highlightPreviousContextMenuItem(event) {
+                event.target.closest('li').previousElementSibling.querySelector('button').focus()
+            },
+        }
+    }
+
+    </script>
 	<script src="http://localhost:35729/livereload.js"></script>
 </body>
