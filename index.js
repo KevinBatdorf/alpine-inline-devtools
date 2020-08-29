@@ -220,7 +220,7 @@ window.deferLoadingAlpine = function (callback) {
     alpineDevToolsComponent.setAttribute('x-data', 'alpineDevTools()')
     alpineDevToolsComponent.setAttribute('x-init', '$nextTick(() => { start() })')
     alpineDevToolsComponent.textContent = 'Alpine Devtools'
-    alpineDevToolsComponent.style.cssText = "position:fixed!important;bottom:0!important;right:0!important;margin:4px!important;padding:5px 8px!important;border-radius:10px!important;background-color:#1a202c!important;color:#d8dee9!important;font-size:14px!important"
+    alpineDevToolsComponent.style.cssText = "position:fixed!important;bottom:0!important;right:0!important;margin:4px!important;padding:5px 8px!important;border-radius:10px!important;background-color:#1a202c!important;color:#d8dee9!important;font-size:14px!important;outline:0!important"
     document.body.appendChild(alpineDevToolsComponent)
 }
 
