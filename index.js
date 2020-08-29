@@ -1,4 +1,4 @@
-window.alpineDevTools = function(position) {
+window.alpineDevToolsHandler = function(position) {
 	return {
         alpines: [],
         open: false,
@@ -105,7 +105,7 @@ window.alpineDevTools = function(position) {
         viewerHTML() {
             return `
             <div
-                class="flex flex-col justify-between fixed inset-0 bg-gray-900 text-gray-400 pb-3 pt-6 max-w-screen overflow-hidden"
+                class="flex flex-col justify-between fixed inset-0 bg-gray-900 text-gray-400 py-3 max-w-screen overflow-hidden"
                 x-cloak
                 x-show="open"
 				x-transition:enter="transition ease-in duration-200"
@@ -115,7 +115,7 @@ window.alpineDevTools = function(position) {
 				x-transition:leave-start="transform translate-y-0 opacity-100"
 				x-transition:leave-end="transform translate-y-2 opacity-0">
 				<div
-					class="divide-y-2 divide-gray-700 space-y-5 -mt-5 mb-5 px-3 overflow-scroll">
+					class="divide-y-2 divide-gray-700 space-y-5 -mt-5 pb-5 px-3 overflow-scroll">
 					<template x-for="alpine of alpines">
 						<div class="pt-5">
 							<div x-text="computeTitle(alpine)" class="mb-1 font-extrabold" style="color:#d8dee9"></div>
@@ -130,14 +130,14 @@ window.alpineDevTools = function(position) {
 						</div>
 					</template>
 				</div>
-				<div class="border-t border-gray-700 pt-2 text-xs leading-none mx-3">
-					<a class="hover:text-blue-500 mr-1" target="_blank" href="https://twitter.com/kevinbatdorf">@kevinbatdorf</a>
+				<div class="border-t border-gray-700 text-gray-500 pt-2 leading-none mx-3" style="font-size:11px">
+					<a class="hover:text-blue-500 mr-px" target="_blank" href="https://twitter.com/kevinbatdorf">@kevinbatdorf</a>
 					·
-					<a class="hover:text-blue-500 mx-1" target="_blank" href="https://github.com/kevinbatdorf/alpine-inline-devtools">github</a>
+					<a class="hover:text-blue-500 mx-px" target="_blank" href="https://github.com/kevinbatdorf/alpine-inline-devtools">github</a>
 					·
-					<a class="hover:text-blue-500 mx-1" target="_blank" href="https://github.com/sponsors/KevinBatdorf">sponsor</a>
+					<a class="hover:text-blue-500 mx-px" target="_blank" href="https://github.com/sponsors/KevinBatdorf">sponsor</a>
 					·
-					<a class="hover:text-blue-500 mx-1" target="_blank" href="https://codepen.io/collection/nRxrPk">Alpine demos</a>
+					<a class="hover:text-blue-500 mx-px" target="_blank" href="https://codepen.io/collection/nRxrPk">demos</a>
 				</div>
 			</div>`
 		}
@@ -218,19 +218,22 @@ window.alpineDevToolsViewer = function(alpines) {
     }
 }
 
-const alpine = window.deferLoadingAlpine || ((alpine) => alpine())
-window.deferLoadingAlpine = function (callback) {
-    alpine(callback)
+function alpineDevTools() {
     const alpineDevToolsComponent = document.createElement('button')
     alpineDevToolsComponent.id = 'alpine-devtools'
-    alpineDevToolsComponent.setAttribute('x-data', 'alpineDevTools()')
+    alpineDevToolsComponent.setAttribute('x-data', 'alpineDevToolsHandler()')
     alpineDevToolsComponent.setAttribute('x-show.transition.opacity.duration.1000', 'alpines.length && !open')
     alpineDevToolsComponent.setAttribute('x-on:click', 'openWindow')
-    alpineDevToolsComponent.setAttribute('x-data', 'alpineDevTools()')
     alpineDevToolsComponent.setAttribute('x-init', '$nextTick(() => { start() })')
     alpineDevToolsComponent.textContent = 'Alpine Devtools'
     alpineDevToolsComponent.style.cssText = "position:fixed!important;bottom:0!important;right:0!important;margin:4px!important;padding:5px 8px!important;border-radius:10px!important;background-color:#1a202c!important;color:#d8dee9!important;font-size:14px!important;outline:0!important"
     document.body.appendChild(alpineDevToolsComponent)
+}
+
+const alpine = window.deferLoadingAlpine || ((alpine) => alpine())
+window.deferLoadingAlpine = function (callback) {
+    alpine(callback)
+    alpineDevTools()
 }
 
 export default alpineDevTools
