@@ -77,7 +77,8 @@ window.alpineDevToolsHandler = function(position) {
                 const devtoolsScript = this.windowRef.document.createElement('script')
                 devtoolsScript.id = 'devtools-script'
                 devtoolsScript.setAttribute('type', 'text/javascript')
-                devtoolsScript.src = document.getElementById('alpine-devtools-script').src
+                // TODO: possibly throw an error if this fails
+                devtoolsScript.src = window.alpineDevToolsScriptURL
                 this.windowRef.document.head.appendChild(devtoolsScript)
             }
 
@@ -145,12 +146,7 @@ window.alpineDevToolsHandler = function(position) {
 	}
 }
 
-window.alpineDevToolsViewer = function(alpines) {
-    Alpine.addMagicProperty('devtoolsRefresh', function ($el) {
-        return () => {
-            this.updateElements()
-        }
-    })
+window.alpineDevToolsViewer = function() {
     return {
         computeTitle(alpine) {
 			return alpine.getAttribute('x-title')
@@ -217,6 +213,18 @@ window.alpineDevToolsViewer = function(alpines) {
 			return div.innerHTML
 		},
     }
+}
+
+// Discover the file name to inject into to popup
+let alpineDevToolsScript
+if (alpineDevToolsScript = document.getElementById('alpine-devtools-script')) {
+	window.alpineDevToolsScriptURL = alpineDevToolsScript.src
+} else {
+	let possibleFileName = (new Error).stack.split("\n")
+	possibleFileName = possibleFileName.find(string => {
+		return new RegExp("([a-zA-Z0-9]+://)?([a-zA-Z0-9_]+:[a-zA-Z0-9_]+@)?([a-zA-Z0-9.-]+\\.[A-Za-z]{2,4})(:[0-9]+)?(/.*)?").test(string)
+	})
+	window.alpineDevToolsScriptURL = (possibleFileName.match(/(https?:\/\/[^ ]*)/)[1]).split('.js')[0] + '.js'
 }
 
 function alpineDevTools() {

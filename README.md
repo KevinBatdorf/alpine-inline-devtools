@@ -14,10 +14,10 @@ Include the following `<script>` tag in the `<head>` of your document (before Al
 ```html
 <!-- To be used in development only -->
 @if (App::environment(['local', 'staging'])) {
-    <script src="https://cdn.jsdelivr.net/gh/kevinbatdorf/alpine-inline-devtools@0.1.x/dist/index.js"></script>
+    <script id="alpine-devtools-script" src="https://cdn.jsdelivr.net/gh/kevinbatdorf/alpine-inline-devtools@0.1.x/dist/index.js"></script>
 @endif
 ```
-> ⚠️ This will very likely not work if installed via NPM. I've only added it to NPM for a better jsDeliver UX
+> ⚠️ Having the ID in the script tag is optional but will help identify the script slightly faster
 
 ## Themes
 The next iteration of this project will include adding themes, since as developers it's important to have our tools look as comfortable as they function. Currently, all of TailwindCSS is being pulled in as well, which will most likely change to instead pull in a custom build per theme.
