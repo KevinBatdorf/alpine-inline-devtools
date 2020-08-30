@@ -10,7 +10,7 @@ An easy way to monitor your state while developing with Alpine
 Include the following `<script>` tag in the `<head>` of your document (before Alpine):
 
 ```html
-<!-- To be used in development only -->
+<!-- To be used during development only -->
 @if (App::environment(['local', 'staging'])) {
     <script id="alpine-devtools-script" src="https://cdn.jsdelivr.net/gh/kevinbatdorf/alpine-inline-devtools/dist/index.js"></script>
 @endif
