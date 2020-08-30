@@ -109,23 +109,17 @@ window.alpineDevToolsHandler = function (position) {
             <div
                 class="flex flex-col justify-between fixed inset-0 bg-gray-900 text-gray-400 py-3 max-w-screen overflow-hidden"
                 x-cloak
-                x-show="open"
-				x-transition:enter="transition ease-in duration-200"
-				x-transition:enter-start="transform opacity-100 translate-y-2"
-				x-transition:enter-end="transform opacity-100"
-				x-transition:leave="transition ease-out duration-300"
-				x-transition:leave-start="transform translate-y-0 opacity-100"
-				x-transition:leave-end="transform translate-y-2 opacity-0">
+                x-show="open">
 				<div
 					class="divide-y-2 divide-gray-700 space-y-5 -mt-5 pb-5 px-3 overflow-scroll">
-					<template x-for="alpine of alpines">
+					<template x-for="(alpine, i) in [...alpines]" :key="i">
 						<div class="pt-5">
 							<div x-text="computeTitle(alpine)" class="mb-1 font-extrabold" style="color:#d8dee9"></div>
 							<template x-if="!getAlpineData(alpine).length"><p class="text-sm">No data found</p></template>
-							<template x-for="[key, value] of getAlpineData(alpine)">
+							<template x-for="[key, value] of getAlpineData(alpine)" :key="key">
 								<div
 									class="leading-normal"
-									x-html="getItem(key, value)"
+									x-html="getItem(key, value, i)"
 									x-show="getType(value) !== 'function'">
 								</div>
 							</template>
@@ -167,15 +161,25 @@ window.alpineDevToolsViewer = function () {
 				return 'function'
 			}
 			return typeof value
-		},
-		getItem(key, value) {
+        },
+        updateAlpine(alpineIndex, key, value) {
+            // Right now only support toggling true/false
+            if (!['true', 'false'].includes(value)) return
+            window.alpines[alpineIndex].__x.$data[key] = (value !== 'true')
+        },
+		getItem(key, value, alpineIndex = null) {
 			return `<span>
 				<span style="color:#4aea8b" class="text-serif">
 					<span class="inline-block" style="min-width:1rem">${key}</span>
 					<span class="text-white">:</span>
 					<span style="color:#8ac0cf" class="bg-gray-800 px-1 text-xs">${this.getType(value)}</span>
 				</span>
-				<span style="color:#d8dee9">${this.getType(value) === 'string' ? this.escapeHTML(this.getValue(value)) : this.getValue(value)}</span>
+                <span
+                    class="${this.getType(value) === 'boolean' ? 'cursor-pointer' : '' }"
+                    style="color:#d8dee9"
+                    @click.stop="updateAlpine('${alpineIndex}', '${key}', '${value}')">
+                        ${this.getType(value) === 'string' ? this.escapeHTML(this.getValue(value)) : this.getValue(value)}
+                    </span>
 			</span>`
 		},
 		getValue(value) {
