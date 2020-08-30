@@ -1,8 +1,6 @@
 # Alpine Inline Devtools
 An easy way to monitor your state while developing with Alpine
 
-## About
-
 ![alt text](assets/devtools.gif "Title")
 
 ## Installation
