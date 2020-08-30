@@ -12,7 +12,7 @@ Include the following `<script>` tag in the `<head>` of your document (before Al
 ```html
 <!-- To be used in development only -->
 @if (App::environment(['local', 'staging'])) {
-    <script id="alpine-devtools-script" src="https://cdn.jsdelivr.net/gh/kevinbatdorf/alpine-inline-devtools@0.1.x/dist/index.js"></script>
+    <script id="alpine-devtools-script" src="https://cdn.jsdelivr.net/gh/kevinbatdorf/alpine-inline-devtools@0.2.x/dist/index.js"></script>
 @endif
 ```
 > ⚠️ Having the ID in the script tag is optional but will help identify the script slightly faster
