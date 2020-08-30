@@ -17,7 +17,7 @@ Include the following `<script>` tag in the `<head>` of your document (before Al
     <script src="https://cdn.jsdelivr.net/gh/kevinbatdorf/alpine-inline-devtools@0.1.x/dist/index.js"></script>
 @endif
 ```
-> ⚠️ This will not work effeciently if installed via NPM. I've only added it to NPM for a better jsDeliver UX
+> ⚠️ This will very likely not work if installed via NPM. I've only added it to NPM for a better jsDeliver UX
 
 ## Themes
 The next iteration of this project will include adding themes, since as developers it's important to have our tools look as comfortable as they function. Currently, all of TailwindCSS is being pulled in as well, which will most likely change to instead pull in a custom build per theme.
