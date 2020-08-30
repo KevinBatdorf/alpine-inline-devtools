@@ -17,6 +17,14 @@ Include the following `<script>` tag in the `<head>` of your document (before Al
 
 > ⚠️ CodePen support is limited to using Live mode, as the script will otherwise be blocked on code refresh
 
+### Bookmarklet
+
+If you would like to add this as a bookmarklet, you may use the following:
+```js
+javascript:(function(){;const s=document.createElement('script');s.id='alpine-devtools-script';s.setAttribute('type','text/javascript');s.src='https://cdn.jsdelivr.net/gh/kevinbatdorf/alpine-inline-devtools/dist/index.js';s.onload=function(){;window.forceLoadAlpineDevTools();};document.head.appendChild(s)})();
+```
+> ℹ Right-click the bookmark bar -> Select "Add Page" -> Set the name to "Alpine Dev Tools" and paste the code in as the URL
+
 ## Themes
 The next iteration of this project will include adding themes, since as developers it's important to have our tools look as comfortable as they function. Currently, all of TailwindCSS is being pulled in as well, which will most likely change to instead pull in a custom build per theme.
 

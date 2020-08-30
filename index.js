@@ -1,4 +1,4 @@
-window.alpineDevToolsHandler = function(position) {
+window.alpineDevToolsHandler = function (position) {
 	return {
         alpines: [],
         open: false,
@@ -146,7 +146,7 @@ window.alpineDevToolsHandler = function(position) {
 	}
 }
 
-window.alpineDevToolsViewer = function() {
+window.alpineDevToolsViewer = function () {
     return {
         computeTitle(alpine) {
 			return alpine.getAttribute('x-title')
@@ -215,7 +215,7 @@ window.alpineDevToolsViewer = function() {
     }
 }
 
-;(function () {
+function setAlpineDevToolsScriptSource () {
     // Discover the file name to inject into to popup
     let alpineDevToolsScript
     if (alpineDevToolsScript = document.getElementById('alpine-devtools-script')) {
@@ -237,22 +237,43 @@ window.alpineDevToolsViewer = function() {
 		}
         window.alpineDevToolsScriptURL = possibleFileName + '.js'
     }
-})();
+}
+try {
+    setAlpineDevToolsScriptSource()
+} catch (error) {
+	console.error('Alpine DevTools: We couldn\'t identify the source script')
+}
 
 function alpineDevTools() {
     const alpineDevToolsComponent = document.createElement('button')
     alpineDevToolsComponent.id = 'alpine-devtools'
     alpineDevToolsComponent.setAttribute('x-data', 'alpineDevToolsHandler()')
-    alpineDevToolsComponent.setAttribute('x-show.transition.opacity.duration.1000', 'alpines.length && !open')
+    alpineDevToolsComponent.setAttribute('x-show.transition.out.opacity.duration.1000', 'alpines.length && !open')
+    alpineDevToolsComponent.setAttribute('x-bind:class', '{"alpine-button-devtools-closed" : !open}')
     alpineDevToolsComponent.setAttribute('x-on:click', 'openWindow')
+    alpineDevToolsComponent.setAttribute('x-on:open-alpine-devtools.window', 'openWindow')
     alpineDevToolsComponent.setAttribute('x-init', '$nextTick(() => { start() })')
     alpineDevToolsComponent.textContent = 'Alpine Devtools'
-    alpineDevToolsComponent.style.cssText = "position:fixed!important;bottom:0!important;right:0!important;margin:4px!important;padding:5px 8px!important;border-radius:10px!important;background-color:#1a202c!important;color:#d8dee9!important;font-size:14px!important;outline:0!important"
+    alpineDevToolsComponent.style.cssText = "position:fixed!important;bottom:0!important;right:0!important;margin:4px!important;padding:5px 8px!important;border-radius:10px!important;background-color:#1a202c!important;color:#d8dee9!important;font-size:14px!important;outline:0!important;"
+
+    // Set some hard styles on the button based on need
+    const styleSheet = document.createElement('style')
+    styleSheet.type = 'text/css'
+    // Force the opacity when the button is open. I noticed TailwindUI is messing with this otherwise, for example
+    styleSheet.appendChild(document.createTextNode('.alpine-button-devtools-closed{opacity:1!important}'))
+
+    document.head.appendChild(styleSheet)
     document.body.appendChild(alpineDevToolsComponent)
 }
 
 const alpine = window.deferLoadingAlpine || ((alpine) => alpine())
 window.deferLoadingAlpine = function (callback) {
     alpine(callback)
+    alpineDevTools()
+}
+
+// Used for when injecting the script into a random page
+window.forceLoadAlpineDevTools = function() {
+    setAlpineDevToolsScriptSource()
     alpineDevTools()
 }
