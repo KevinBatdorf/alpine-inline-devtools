@@ -21,7 +21,7 @@ Include the following `<script>` tag in the `<head>` of your document (before Al
 
 If you would like to add this as a bookmarklet, you may use the following:
 ```js
-javascript:(function(){;const s=document.createElement('script');s.id='alpine-devtools-script';s.setAttribute('type','text/javascript');s.src='https://cdn.jsdelivr.net/gh/kevinbatdorf/alpine-inline-devtools/dist/index.js';s.onload=function(){;window.forceLoadAlpineDevTools();};document.head.appendChild(s)})();
+javascript:(function(){const s=document.createElement('script');s.id='alpine-devtools-script';s.setAttribute('type','text/javascript');s.src='https://cdn.jsdelivr.net/gh/kevinbatdorf/alpine-inline-devtools/dist/index.js';s.onload=function(){window.forceLoadAlpineDevTools();};document.head.appendChild(s)})();
 ```
 
 ## Themes
