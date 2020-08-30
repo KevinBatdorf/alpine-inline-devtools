@@ -25,6 +25,6 @@ The idea of this project wasn't to replicate other popular Dev Tools but instead
 
 ## License
 
-Copyright (c) 2020Kevin Batdorf
+Copyright (c) 2020 Kevin Batdorf
 
 Licensed under the MIT license, see [LICENSE.md](LICENSE.md) for details.
