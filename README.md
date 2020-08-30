@@ -1,8 +1,6 @@
 # Alpine Inline Devtools
 An easy way to monitor your state while developing with Alpine
 
-![GitHub tag (latest by date)](https://img.shields.io/github/v/tag/kevinbatdorf/alpine-inline-devtools?label=version&style=flat-square)
-
 ## About
 
 ![alt text](assets/devtools.gif "Title")
