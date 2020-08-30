@@ -215,17 +215,29 @@ window.alpineDevToolsViewer = function() {
     }
 }
 
-// Discover the file name to inject into to popup
-let alpineDevToolsScript
-if (alpineDevToolsScript = document.getElementById('alpine-devtools-script')) {
-	window.alpineDevToolsScriptURL = alpineDevToolsScript.src
-} else {
-	let possibleFileName = (new Error).stack.split("\n")
-	possibleFileName = possibleFileName.find(string => {
-		return new RegExp("([a-zA-Z0-9]+://)?([a-zA-Z0-9_]+:[a-zA-Z0-9_]+@)?([a-zA-Z0-9.-]+\\.[A-Za-z]{2,4})(:[0-9]+)?(/.*)?").test(string)
-	})
-	window.alpineDevToolsScriptURL = (possibleFileName.match(/(https?:\/\/[^ ]*)/)[1]).split('.js')[0] + '.js'
-}
+;(function () {
+    // Discover the file name to inject into to popup
+    let alpineDevToolsScript
+    if (alpineDevToolsScript = document.getElementById('alpine-devtools-script')) {
+        window.alpineDevToolsScriptURL = alpineDevToolsScript.src
+    } else {
+        // Create an error to fine the source
+        let possibleFileName = (new Error).stack.split("\n")
+        // Grab the first URL
+        possibleFileName = possibleFileName.find(string => {
+            return new RegExp("([a-zA-Z0-9]+://)?([a-zA-Z0-9_]+:[a-zA-Z0-9_]+@)?([a-zA-Z0-9.-]+\\.[A-Za-z]{2,4})(:[0-9]+)?(/.*)?").test(string)
+        })
+        // Extract the URL
+        possibleFileName = (possibleFileName.match(/(https?:\/\/[^ ]*)/)[1])
+        // Split at the end to remove anything after .js
+        const lastIndex = possibleFileName.lastIndexOf('.js')
+		possibleFileName = possibleFileName.slice(0, lastIndex)
+		if (Array.isArray(possibleFileName)) {
+			possibleFileName = possibleFileName[0]
+		}
+        window.alpineDevToolsScriptURL = possibleFileName + '.js'
+    }
+})();
 
 function alpineDevTools() {
     const alpineDevToolsComponent = document.createElement('button')
