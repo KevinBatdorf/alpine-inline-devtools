@@ -17,7 +17,7 @@ Include the following `<script>` tag in the `<head>` of your document (before Al
 ```
 > ⚠️ Having the ID in the script tag is optional but will help identify the script slightly faster
 
-> ⚠️ CodePen support limited to using Live mode, as the script will otherwise be blocked on code refresh
+> ⚠️ CodePen support is limited to using Live mode, as the script will otherwise be blocked on code refresh
 
 ## Themes
 The next iteration of this project will include adding themes, since as developers it's important to have our tools look as comfortable as they function. Currently, all of TailwindCSS is being pulled in as well, which will most likely change to instead pull in a custom build per theme.
