@@ -1,4 +1,4 @@
-# Alpine Inline Devtools
+# Alpine Inline DevTools
 An easy way to monitor your state while developing with Alpine
 
 ![alt text](assets/devtools.gif "Title")
