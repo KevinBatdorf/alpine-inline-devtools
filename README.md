@@ -13,13 +13,13 @@ Include the following `<script>` tag in the `<head>` of your document (before Al
 
 ```html
 @if (App::environment(['local', 'staging'])) {
-    <script src="https://cdn.jsdelivr.net/gh/kevinbatdorf/alpine-inline-devtools@0.x.x/dist/index.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/kevinbatdorf/alpine-inline-devtools@0.1.x/dist/index.js"></script>
 @endif
 ```
 > ⚠️ This code isn't meant to be used in production.
 
 ## Themes
-The next iteration of this project will include adding themes, since as developers it's important to have our tools look as comfortable as they function.
+The next iteration of this project will include adding themes, since as developers it's important to have our tools look as comfortable as they function. Currently, all of TailwindCSS is being pulled in as well, which will most likely change to instead pull in a custom build per theme.
 
 ## Two-way binding
 The idea of this project wasn't to replicate other popular Dev Tools but instead to create a tool so that I could easily and quickly view the changes in my components. I found while working in other frameworks, I hardly ever used the Dev Tools to manipulate the application state. That said, I may still impliment this, especially if there is demand (So check if there is an open issue and comment, or open a new one).

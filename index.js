@@ -60,7 +60,8 @@ window.alpineDevToolsHandler = function(position) {
             if (!this.windowRef.document.getElementById('alpine-devtools-script')) {
                 const alpineScript = this.windowRef.document.createElement('script')
                 alpineScript.id = 'alpine-devtools-script'
-                alpineScript.src = 'https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2.x.x/dist/alpine.min.js'
+                const version = window.Alpine.version || '2.x.x'
+                alpineScript.src = `https://cdn.jsdelivr.net/gh/alpinejs/alpine@v${version}/dist/alpine.min.js`
                 this.windowRef.document.head.appendChild(alpineScript)
             }
 
