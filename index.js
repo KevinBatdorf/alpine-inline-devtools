@@ -130,10 +130,6 @@ window.alpineDevToolsHandler = function (position) {
 					<a class="hover:text-blue-500 mr-px" target="_blank" href="https://twitter.com/kevinbatdorf">@kevinbatdorf</a>
 					·
 					<a class="hover:text-blue-500 mx-px" target="_blank" href="https://github.com/kevinbatdorf/alpine-inline-devtools">github</a>
-					·
-					<a class="hover:text-blue-500 mx-px" target="_blank" href="https://github.com/sponsors/KevinBatdorf">sponsor</a>
-					·
-					<a class="hover:text-blue-500 mx-px" target="_blank" href="https://codepen.io/collection/nRxrPk">demos</a>
 				</div>
 			</div>`
 		}
