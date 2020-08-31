@@ -107,18 +107,18 @@ window.alpineDevToolsHandler = function (position) {
         viewerHTML() {
             return `
             <div
-                class="flex flex-col justify-between fixed inset-0 bg-gray-900 text-gray-400 py-3 max-w-screen overflow-hidden"
+                class="flex flex-col justify-between fixed inset-0 bg-gray-900 text-gray-400 py-2 max-w-screen overflow-hidden"
                 x-cloak
                 x-show="open">
 				<div
-					class="divide-y-2 divide-gray-700 space-y-5 -mt-5 pb-5 px-3 overflow-scroll">
+					class="divide-y-2 divide-gray-700 space-y-5 -mt-5 pl-6 ml-2 pb-5 pr-3 overflow-scroll">
 					<template x-for="(alpine, i) in [...alpines]" :key="i">
 						<div class="pt-5">
-							<div x-text="computeTitle(alpine)" class="mb-1 font-extrabold" style="color:#d8dee9"></div>
+							<div x-text="computeTitle(alpine)" class="mb-1 -ml-6 font-extrabold" style="color:#d8dee9"></div>
 							<template x-if="!getAlpineData(alpine).length"><p class="text-sm">No data found</p></template>
 							<template x-for="[key, value] of getAlpineData(alpine)" :key="key">
 								<div
-									class="leading-normal"
+									class="leading-none"
 									x-html="getItem(key, value, i)"
 									x-show="getType(value) !== 'function'">
 								</div>
@@ -126,7 +126,7 @@ window.alpineDevToolsHandler = function (position) {
 						</div>
 					</template>
 				</div>
-				<div class="border-t border-gray-700 text-gray-500 pt-2 leading-none mx-3" style="font-size:11px">
+				<div class="border-t border-gray-700 text-gray-500 pt-2 leading-none mx-2" style="font-size:11px">
 					<a class="hover:text-blue-500 mr-px" target="_blank" href="https://twitter.com/kevinbatdorf">@kevinbatdorf</a>
 					·
 					<a class="hover:text-blue-500 mx-px" target="_blank" href="https://github.com/kevinbatdorf/alpine-inline-devtools">github</a>
@@ -164,7 +164,9 @@ window.alpineDevToolsViewer = function () {
             window.alpines[alpineIndex].__x.$data[key] = (value !== 'true')
         },
 		getItem(key, value, alpineIndex = null) {
-			return `<span>
+            return `
+            <span class="py-1 inline-block relative">
+                ${this.getType(value) === 'boolean' ? this.getGutterAction(alpineIndex, key, value) : ''}
 				<span style="color:#4aea8b" class="text-serif">
 					<span class="inline-block" style="min-width:1rem">${key}</span>
 					<span class="text-white">:</span>
@@ -172,12 +174,22 @@ window.alpineDevToolsViewer = function () {
 				</span>
                 <span
                     class="${this.getType(value) === 'boolean' ? 'cursor-pointer' : '' }"
-                    style="color:#d8dee9"
-                    @click.stop="updateAlpine('${alpineIndex}', '${key}', '${value}')">
+                    style="color:#d8dee9">
                         ${this.getType(value) === 'string' ? this.escapeHTML(this.getValue(value)) : this.getValue(value)}
-                    </span>
+                </span>
 			</span>`
-		},
+        },
+        getGutterAction(alpineIndex, key, value) {
+
+            return `
+            <span class="-ml-5 absolute left-0">
+                <input
+                    style="margin-top:3px;"
+                    type="checkbox"
+                    :checked="${value}"
+                    @change.stop="updateAlpine('${alpineIndex}', '${key}', '${value}')">
+            </span>`
+        },
 		getValue(value) {
 			if (this.getType(value) == 'boolean') {
 				return value
