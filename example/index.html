@@ -15,13 +15,17 @@
 
         <p class="mb-10 text-center">Drag & drop or press the menu icon button <br>(or use your tab key)</p>
 
-        <div class="pt-6 pb-4 bg-indigo-500 rounded-lg shadow-xl max-w-sm">
-        <h1 id="agenda-title" class="text-white font-extrabold text-lg p-6 pt-0">What's the agenda for today?</h1>
+    <div
+        x-title="Sorting Demo"
+        x-data="dragAndSortHandler(items)"
+        class="pt-6 pb-4 bg-indigo-500 rounded-lg shadow-xl max-w-sm">
+        <h1
+            id="agenda-title"
+            class="text-white font-extrabold text-lg p-6 pt-0"
+            x-text="title"></h1>
 
         <ul
             aria-labelledBy="agenda-title"
-            x-title="Sorting Demo"
-            x-data="dragAndSortHandler(items)"
             @keydown.window.tab="usedKeyboard = true"
             @dragenter.stop.prevent="dropcheck++"
             @dragleave="dropcheck--;dropcheck || rePositionPlaceholder()"
@@ -136,6 +140,7 @@
             // Keeps track of when we leave the dropzone
             // Otherwise child events will trigger @dragloave
             dropcheck: 0,
+            title: 'What\'s the agenda for today?',
             usedKeyboard: false,
             originalIndexBeingDragged: null,
             indexBeingDragged: null,
