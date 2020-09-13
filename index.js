@@ -1,10 +1,10 @@
 window.alpineDevToolsHandler = function (position) {
-	return {
+    return {
         alpines: [],
         open: false,
         observer: null,
         windowRef: null,
-		start() {
+        start() {
             this.alpines = document.querySelectorAll('[x-data]:not(#alpine-devtools)')
             if (!this.alpines) return
             this.registerAlpines(this.alpines)
@@ -16,21 +16,21 @@ window.alpineDevToolsHandler = function (position) {
             }
         },
         registerAlpines(alpines) {
-			this.observer = new MutationObserver(mutations => {
-				this.updateAlpines()
+            this.observer = new MutationObserver(mutations => {
+                this.updateAlpines()
             })
             alpines.forEach(alpine => {
                 // This will trigger a mutation when internal data changes but no visual mutation is observed
                 alpine.setAttribute('x-bind:data-last-refresh', 'Date.now()')
-				this.observer.observe(alpine, {
+                this.observer.observe(alpine, {
                     attributes: true,
                     childList: true,
                     characterData: true,
                     subtree: true,
-				})
-			})
+                })
+            })
         },
-		updateAlpines() {
+        updateAlpines() {
             this.checkIfNewAlpinesWereAddedAndRegisterThem()
             if (this.windowRef && !this.windowRef.editing) {
                 this.windowRef.alpines = this.alpines
@@ -50,7 +50,7 @@ window.alpineDevToolsHandler = function (position) {
                 this.registerAlpines(newAlpines)
             }
         },
-		openWindow() {
+        openWindow() {
             this.windowRef = window.open('', 'alpine-devtools', 'width=450, height=650, left=100, top=100')
             if (!this.windowRef) return sessionStorage.removeItem('alpine-devtools')
             this.windowRef.document.body.style.backgroundColor = '#1a202c'
@@ -111,9 +111,9 @@ window.alpineDevToolsHandler = function (position) {
                 class="flex flex-col justify-between fixed inset-0 bg-gray-900 text-gray-400 py-2 max-w-screen overflow-hidden"
                 x-cloak
                 x-show="open">
-				<div
-					class="divide-y-2 divide-gray-800 space-y-5 -mt-5 pb-5 p-2 overflow-scroll">
-					<template x-for="(alpine, i) in [...alpines]" :key="i">
+                <div
+                    class="divide-y-2 divide-gray-800 space-y-5 -mt-5 pb-5 p-2 overflow-scroll">
+                    <template x-for="(alpine, i) in [...alpines]" :key="i">
                         <div class="pt-5">
                             <div class="pl-4 overflow-hidden">
                                 <div x-text="computeTitle(alpine)" class="mb-1 -ml-3 font-extrabold" style="color:#d8dee9"></div>
@@ -125,46 +125,46 @@ window.alpineDevToolsHandler = function (position) {
                                         x-show="getType(value) !== 'function'">
                                     </div>
                                 </template>
-						    </div>
-						</div>
-					</template>
+                            </div>
+                        </div>
+                    </template>
                 </div>
                 <div
                     x-html="getStatusMessage()"
                     class="border-t border-gray-700 text-gray-500 leading-none mx-2" style="font-size:11px; padding-top:5px;">
                 </div>
-			</div>`
+            </div>`
         },
-	}
+    }
 }
 
 window.alpineDevToolsViewer = function () {
     return {
         editing: '',
         computeTitle(alpine) {
-			return alpine.getAttribute('x-title')
-				|| alpine.getAttribute('aria-label')
-				|| alpine.getAttribute('x-id')
-				|| alpine.id
-				|| this.convertFunctionName(alpine.getAttribute('x-data'))
-				|| `<${alpine.tagName.toLowerCase()}>`
+            return alpine.getAttribute('x-title')
+                || alpine.getAttribute('aria-label')
+                || alpine.getAttribute('x-id')
+                || alpine.id
+                || this.convertFunctionName(alpine.getAttribute('x-data'))
+                || `<${alpine.tagName.toLowerCase()}>`
         },
         getAlpineData(alpine) {
-			if (!alpine.__x) return []
-			return Object.entries(alpine.__x.getUnobservedData())
-		},
-		getType(value) {
+            if (!alpine.__x) return []
+            return Object.entries(alpine.__x.getUnobservedData())
+        },
+        getType(value) {
             // Leave as object for now until we need it
             // if (value === null) {
             //     return 'null'
             // }
-			if (Array.isArray(value)) {
-				return 'array'
-			}
-			if (typeof value === 'function') {
-				return 'function'
-			}
-			return typeof value
+            if (Array.isArray(value)) {
+                return 'array'
+            }
+            if (typeof value === 'function') {
+                return 'function'
+            }
+            return typeof value
         },
         updateAlpine(type, alpineIndex, key, value) {
             switch (type) {
@@ -177,7 +177,7 @@ window.alpineDevToolsViewer = function () {
             }
 
         },
-		getItem(key, value, alpineIndex = null) {
+        getItem(key, value, alpineIndex = null) {
             const id = Date.now() + Math.floor(Math.random() * 1000000)
             const type = this.getType(value)
             return `
@@ -185,11 +185,11 @@ window.alpineDevToolsViewer = function () {
                 <span class="absolute left-0 -ml-3">
                     ${this.getGutterAction(id, type, alpineIndex, key, value)}
                 </span>
-				<span style="color:#4aea8b" class="text-serif whitespace-no-wrap mr-2">
-					<label for="${id}" class="inline-block" style="min-width:1rem">${key}</label>
-					<span class="text-white">:</span>
-					<span style="color:#8ac0cf" class="bg-gray-800 px-1 text-xs">${type}</span>
-				</span>
+                <span style="color:#4aea8b" class="text-serif whitespace-no-wrap mr-2">
+                    <label for="${id}" class="inline-block" style="min-width:1rem">${key}</label>
+                    <span class="text-white">:</span>
+                    <span style="color:#8ac0cf" class="bg-gray-800 px-1 text-xs">${type}</span>
+                </span>
                 <span
                     class="relative w-full ${type === 'boolean' ? 'cursor-pointer' : '' }"
                     style="color:#d8dee9">
@@ -201,7 +201,7 @@ window.alpineDevToolsViewer = function () {
                         </span>
                         ${this.getEditField(id, type, alpineIndex, key, value)}
                 </span>
-			</span>`
+            </span>`
         },
         getEditField(id, type, alpineIndex, key, value) {
             switch (type) {
@@ -266,30 +266,30 @@ window.alpineDevToolsViewer = function () {
                 document.execCommand('selectAll', false, null)
             })
         },
-		getValue(id, type, alpineIndex, key, value) {
+        getValue(id, type, alpineIndex, key, value) {
             switch (type) {
-			    case 'boolean':
-				    return value
-			    case 'number':
-				    return value
-			    case 'string':
+                case 'boolean':
+                    return value
+                case 'number':
+                    return value
+                case 'string':
                     return `<span
                         class="editable-content"
                         @click="openEditorAndSelectText('${alpineIndex}', '${key}')">
                             ${this.escapeHTML(value)}
                         </span>`
-			    case 'array':
+                case 'array':
                     if (!value) return value
                     return Object.entries(value).map(([...item]) => {
                         return `<ul class="pl-4">${this.getItem(item[0], item[1])}</ul>`
                     }).join('')
-		        case 'object':
+                case 'object':
                     if (!value) return value
                     return Object.entries(value).map(([...item]) => {
                         return `<ul class="pl-4">${this.getItem(item[0], item[1])}</ul>`
                     }).join('')
-			}
-			return value
+            }
+            return value
         },
         getStatusMessage() {
             if (this.editing.length) {
@@ -301,16 +301,16 @@ window.alpineDevToolsViewer = function () {
                 <a class="hover:text-blue-500 mx-px" target="_blank" href="https://github.com/kevinbatdorf/alpine-inline-devtools">github</a>
             `
         },
-		convertFunctionName(functionName) {
-			if (functionName.indexOf('{') === 0) return
-			let name = functionName.replace(/\(([^\)]+)\)/, '').replace('()', '').replace(/([A-Z])/g, " $1")
-			return name ? name.charAt(0).toUpperCase() + name.slice(1) : ''
-		},
-		escapeHTML(html) {
-			let div = document.createElement('div')
-			div.innerText = html
-			return div.innerHTML
-		},
+        convertFunctionName(functionName) {
+            if (functionName.indexOf('{') === 0) return
+            let name = functionName.replace(/\(([^\)]+)\)/, '').replace('()', '').replace(/([A-Z])/g, " $1")
+            return name ? name.charAt(0).toUpperCase() + name.slice(1) : ''
+        },
+        escapeHTML(html) {
+            let div = document.createElement('div')
+            div.innerText = html
+            return div.innerHTML
+        },
     }
 }
 
@@ -330,17 +330,17 @@ function setAlpineDevToolsScriptSource () {
         possibleFileName = (possibleFileName.match(/(https?:\/\/[^ ]*)/)[1])
         // Split at the end to remove anything after .js
         const lastIndex = possibleFileName.lastIndexOf('.js')
-		possibleFileName = possibleFileName.slice(0, lastIndex)
-		if (Array.isArray(possibleFileName)) {
-			possibleFileName = possibleFileName[0]
-		}
+        possibleFileName = possibleFileName.slice(0, lastIndex)
+        if (Array.isArray(possibleFileName)) {
+            possibleFileName = possibleFileName[0]
+        }
         window.alpineDevToolsScriptURL = possibleFileName + '.js'
     }
 }
 try {
     setAlpineDevToolsScriptSource()
 } catch (error) {
-	console.error('Alpine DevTools: We couldn\'t identify the source script')
+    console.error('Alpine DevTools: We couldn\'t identify the source script')
 }
 
 function alpineDevTools() {
