@@ -32,10 +32,11 @@ window.alpineDevToolsHandler = function (position) {
         },
 		updateAlpines() {
             this.checkIfNewAlpinesWereAddedAndRegisterThem()
-            if (this.windowRef) {
+            if (this.windowRef && !this.windowRef.editing) {
                 this.windowRef.alpines = this.alpines
                 const viewer = this.windowRef.document.querySelector('#alpine-devtools-viewer')
                 if (!viewer) return
+                if (viewer.__x.$data.editing.length) return
                 typeof viewer.__x !== 'undefined' && viewer.__x.updateElements(viewer)
             }
         },
@@ -127,12 +128,11 @@ window.alpineDevToolsHandler = function (position) {
 						    </div>
 						</div>
 					</template>
-				</div>
-				<div class="border-t border-gray-700 text-gray-500 leading-none mx-2" style="font-size:11px; padding-top:5px;">
-					<a class="hover:text-blue-500 mr-px" target="_blank" href="https://twitter.com/kevinbatdorf">@kevinbatdorf</a>
-					·
-					<a class="hover:text-blue-500 mx-px" target="_blank" href="https://github.com/kevinbatdorf/alpine-inline-devtools">github</a>
-				</div>
+                </div>
+                <div
+                    x-html="getStatusMessage()"
+                    class="border-t border-gray-700 text-gray-500 leading-none mx-2" style="font-size:11px; padding-top:5px;">
+                </div>
 			</div>`
         },
 	}
@@ -140,9 +140,11 @@ window.alpineDevToolsHandler = function (position) {
 
 window.alpineDevToolsViewer = function () {
     return {
+        editing: '',
         computeTitle(alpine) {
 			return alpine.getAttribute('x-title')
 				|| alpine.getAttribute('aria-label')
+				|| alpine.getAttribute('x-id')
 				|| alpine.id
 				|| this.convertFunctionName(alpine.getAttribute('x-data'))
 				|| `<${alpine.tagName.toLowerCase()}>`
@@ -189,12 +191,15 @@ window.alpineDevToolsViewer = function () {
 					<span style="color:#8ac0cf" class="bg-gray-800 px-1 text-xs">${type}</span>
 				</span>
                 <span
-                    class="${type === 'boolean' ? 'cursor-pointer' : '' }"
+                    class="relative w-full ${type === 'boolean' ? 'cursor-pointer' : '' }"
                     style="color:#d8dee9">
-                        <span class="relative z-10">
+                        <span
+                            x-show="editing !== '${alpineIndex}-${key}'"
+                            :class="{'absolute': editing === '${alpineIndex}-${key}'}"
+                            class="relative z-10">
                             ${this.getValue(id, type, alpineIndex, key, value)}
-                            ${this.getEditField(id, type, alpineIndex, key, value)}
                         </span>
+                        ${this.getEditField(id, type, alpineIndex, key, value)}
                 </span>
 			</span>`
         },
@@ -202,9 +207,22 @@ window.alpineDevToolsViewer = function () {
             switch (type) {
                 case 'string':
                     return `<span
+                        x-ref="editor-${alpineIndex}-${key}"
+                        x-show="editing === '${alpineIndex}-${key}'"
+                        style="display:none"
                         contenteditable="true"
-                        class="absolute inset-0 bg-gray-300 text-black text-xs p-1 focus:outline-none"
-                        @change.stop="updateAlpine('${type}', '${alpineIndex}', '${key}', '${value}')">
+                        class="block relative z-30 p-2 bg-gray-200 text-black text-sm focus:outline-none"
+                        :class="{'z-50': editing === '${alpineIndex}-${key}'}"
+                        @click.away="editing = ''"
+                        @keydown.enter.prevent.stop="
+                            editing = ''
+                            updateAlpine('${type}', '${alpineIndex}', '${key}', $event.target.textContent.trim());
+                        "
+                        @keydown.escape.stop="
+                            updateAlpine('${type}', '${alpineIndex}', '${key}', $event.target.parentNode.querySelector('.editable-content').textContent.trim());
+                            editing = ''
+                        "
+                        @input.stop="updateAlpine('${type}', '${alpineIndex}', '${key}', $event.target.textContent.trim())">
                         ${value}
                     </span>`
             }
@@ -225,7 +243,7 @@ window.alpineDevToolsViewer = function () {
                     return `
                         <button
                             id="${id}"
-                            @click=""
+                            @click="openEditorAndSelectText('${alpineIndex}', '${key}')"
                             class="transition duration-200 w-4 mt-px text-white focus:outline-none">
                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
                                 <path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z" />
@@ -235,6 +253,19 @@ window.alpineDevToolsViewer = function () {
                     return ''
             }
         },
+        openEditorAndSelectText(alpineIndex, key) {
+            // If the editor is already open and they press the edit icon again, commit the edit
+            if (this.editing === `${alpineIndex}-${key}`) {
+                this.updateAlpine('string', alpineIndex, key, this.$refs[`editor-${alpineIndex}-${key}`].textContent.trim())
+                this.editing = ''
+                return
+            }
+            this.editing = `${alpineIndex}-${key}`
+            this.$nextTick(() => {
+                this.$refs[`editor-${alpineIndex}-${key}`].focus()
+                document.execCommand('selectAll', false, null)
+            })
+        },
 		getValue(id, type, alpineIndex, key, value) {
             switch (type) {
 			    case 'boolean':
@@ -242,7 +273,11 @@ window.alpineDevToolsViewer = function () {
 			    case 'number':
 				    return value
 			    case 'string':
-                    return this.escapeHTML(`"${value}"`)
+                    return `<span
+                        class="editable-content"
+                        @click="openEditorAndSelectText('${alpineIndex}', '${key}')">
+                            ${this.escapeHTML(value)}
+                        </span>`
 			    case 'array':
                     if (!value) return value
                     return Object.entries(value).map(([...item]) => {
@@ -255,7 +290,17 @@ window.alpineDevToolsViewer = function () {
                     }).join('')
 			}
 			return value
-		},
+        },
+        getStatusMessage() {
+            if (this.editing.length) {
+                return 'Press Enter or click away to finish. Press Esc to cancel.'
+            }
+            return `
+                <a class="hover:text-blue-500 mr-px" target="_blank" href="https://twitter.com/kevinbatdorf">@kevinbatdorf</a>
+                ·
+                <a class="hover:text-blue-500 mx-px" target="_blank" href="https://github.com/kevinbatdorf/alpine-inline-devtools">github</a>
+            `
+        },
 		convertFunctionName(functionName) {
 			if (functionName.indexOf('{') === 0) return
 			let name = functionName.replace(/\(([^\)]+)\)/, '').replace('()', '').replace(/([A-Z])/g, " $1")
