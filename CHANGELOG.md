@@ -11,5 +11,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Discovers new components added after page load
 - Adds refresh attribute to elements to trigger external mutation watcher
 - You can now edit strings from the dev tools
+- Adds a status bar for important info (ex during string update)
 ### Removed
 - No longer registers component events on the window
