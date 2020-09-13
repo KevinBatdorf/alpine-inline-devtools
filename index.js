@@ -32,7 +32,7 @@ window.alpineDevToolsHandler = function (position) {
         },
         updateAlpines() {
             this.checkIfNewAlpinesWereAddedAndRegisterThem()
-            if (this.windowRef && !this.windowRef.editing) {
+            if (this.windowRef) {
                 this.windowRef.alpines = this.alpines
                 const viewer = this.windowRef.document.querySelector('#alpine-devtools-viewer')
                 if (!viewer) return
