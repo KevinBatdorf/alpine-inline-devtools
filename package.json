@@ -1,43 +1,58 @@
 {
-  "name": "@kevinbatdorf/alpine-inline-devtools",
-  "version": "0.1.0",
-  "description": "An easy way to monitor your state while developing with Alpine",
-  "main": "dist/index.js",
-  "publishConfig": {
-    "access": "public"
-  },
-  "scripts": {
-    "test": "jest",
-    "test-watch": "jest --watch",
-    "dev": "npm run development",
-    "development": "cross-env NODE_ENV=development node_modules/webpack/bin/webpack.js --progress --hide-modules --config=node_modules/laravel-mix/setup/webpack.config.js",
-    "watch": "npm run development -- --watch",
-    "build": "cross-env NODE_ENV=production node_modules/webpack/bin/webpack.js --no-progress --hide-modules --config=node_modules/laravel-mix/setup/webpack.config.js"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/kevinbatdorf/alpine-inline-devtools.git"
-  },
-  "keywords": [
-    "alpinejs"
-  ],
-  "author": "Kevin Batdorf",
-  "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/kevinbatdorf/alpine-inline-devtools/issues"
-  },
-  "homepage": "https://github.com/kevinbatdorf/alpine-inline-devtools#readme",
-  "devDependencies": {
-    "alpinejs": "^2.4.1",
-    "cross-env": "^7.0.2",
-    "jest": "^26.0.1",
-    "laravel-mix": "^5.0.4",
-    "vue-template-compiler": "^2.6.11",
-    "webpack-livereload-plugin": "^1.2.0"
-  },
-  "directories": {
-    "example": "example",
-    "test": "test"
-  },
-  "dependencies": {}
+    "name": "@kevinbatdorf/alpine-inline-devtools",
+    "version": "0.1.0",
+    "description": "An easy way to monitor your state while developing with Alpine",
+    "main": "dist/default.js",
+    "publishConfig": {
+        "access": "public"
+    },
+    "scripts": {
+        "build": "rollup -c",
+        "watch": "concurrently \"rollup -c -w\" \"browser-sync example --ss . -f example dist/default.js\"",
+        "test": "jest",
+        "test-watch": "jest --watch"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/kevinbatdorf/alpine-inline-devtools.git"
+    },
+    "keywords": [
+        "alpinejs"
+    ],
+    "author": "Kevin Batdorf",
+    "license": "MIT",
+    "bugs": {
+        "url": "https://github.com/kevinbatdorf/alpine-inline-devtools/issues"
+    },
+    "homepage": "https://github.com/kevinbatdorf/alpine-inline-devtools#readme",
+    "dependencies": {},
+    "peerDependencies": {
+        "alpinejs": "^2.7"
+    },
+    "devDependencies": {
+        "@babel/preset-env": "^7.11.5",
+        "@rollup/plugin-babel": "^5.2.1",
+        "@rollup/plugin-commonjs": "^15.1.0",
+        "@rollup/plugin-json": "^4.1.0",
+        "@rollup/plugin-node-resolve": "^9.0.0",
+        "@testing-library/dom": "^7.24.3",
+        "@testing-library/jest-dom": "^5.11.4",
+        "alpinejs": "^2.7.0",
+        "autoprefixer": "9.8.6",
+        "axios": "^0.20",
+        "browser-sync": "^2.26.12",
+        "concurrently": "^5.3.0",
+        "jest": "^26.4.2",
+        "jsdom-simulant": "^1.1.2",
+        "rollup": "^2.28.2",
+        "rollup-plugin-filesize": "^9.0.2",
+        "rollup-plugin-postcss": "^3.1.8",
+        "tailwindcss": "^1.8.10"
+    },
+    "files": [
+        "dist/*",
+        "package.json",
+        "LICENSE.md",
+        "README.md"
+    ]
 }
