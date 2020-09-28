@@ -35,7 +35,6 @@ const Viewer = function() {
                     window.alpines[alpineIndex].__x.$data[key] = value
                     break
             }
-
         },
         getItem(key, value, alpineIndex = null, scope = '') {
             const id = Date.now() + Math.floor(Math.random() * 1000000)
@@ -50,7 +49,7 @@ const Viewer = function() {
                     <label for="${id}" class="inline-block">${key}</label>
                     <span class="text-property-seperator-color">:</span>
                     <span
-                        x-show="${type !== 'string'}"
+                        x-show="${!['string'].includes(type)}"
                         class="px-1 text-xs text-typeof-color bg-typeof-bg">
                         ${type}
                     </span>

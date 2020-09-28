@@ -15,6 +15,7 @@ Made the status icons hopefully less distracting
 Added default status message
 Fixed bug where you could attempt to edit strings in objects
 Added internal way to track the nested scope
+Removes the string label and puts the text in quotes (For now. Might consider adding this back)
 
 ## [0.6.0] - 2020-09-08
 ### Added

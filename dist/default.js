@@ -235,7 +235,7 @@
                     <label for="${id}" class="inline-block">${key}</label>
                     <span class="text-property-seperator-color">:</span>
                     <span
-                        x-show="${type !== 'string'}"
+                        x-show="${!['string'].includes(type)}"
                         class="px-1 text-xs text-typeof-color bg-typeof-bg">
                         ${type}
                     </span>
