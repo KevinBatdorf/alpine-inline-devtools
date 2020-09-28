@@ -17,8 +17,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - Extracted functions into separate files for better loading
 - Made the status icons hopefully less distracting
-- Removes the string label and puts the text in quotes (For now. Might consider adding this back)
 ### Removed
+- Removes the string label and puts the text in quotes (For now. Might consider adding this back)
 ### Fixed
 - Fixed bug where you could attempt to edit strings in objects
 
