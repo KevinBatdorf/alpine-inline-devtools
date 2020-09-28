@@ -10,7 +10,7 @@ Include the following `<script>` tag in the `<head>` of your document (before Al
 ```html
 <!-- To be used during development only -->
 @if (App::environment(['local', 'staging'])) {
-    <script src="https://cdn.jsdelivr.net/gh/kevinbatdorf/alpine-inline-devtools@0.7.0/dist/default.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/kevinbatdorf/alpine-inline-devtools@0.7.0/dist/default.min.js"></script>
 @endif
 ```
 
