@@ -134,7 +134,7 @@ const Loader = function (Viewer, theme) {
                 </div>
                 <div
                     x-html="getStatusMessage()"
-                    class="border-t border-component-divider text-status-text leading-none mx-2 pt-1.5" style="font-size:11px;">
+                    class="flex items-center justify-between border-t border-component-divider text-status-text leading-none mx-2 pt-1.5" style="font-size:11px;">
                 </div>
             </div>`
         },
