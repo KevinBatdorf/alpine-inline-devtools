@@ -6,6 +6,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+Removed need to identify and load in entire script
+Extracted functions into separate files for better loading
+Added Tailwind config with purging for faster loading
+Added auto theming based on tailwind config
+Improved development of this project with reloading popup instead of previously having to open/close the popup
+Made the status icons hopefully less distracting
+Added default status message
+Fixed bug where you could attempt to edit strings in objects
+Added internal way to track the nested scope
+Removes the string label and puts the text in quotes (For now. Might consider adding this back)
+
 ## [0.6.0] - 2020-09-08
 ### Added
 - Discovers new components added after page load
