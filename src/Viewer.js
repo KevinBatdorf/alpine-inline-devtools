@@ -37,32 +37,37 @@ const Viewer = function() {
             }
 
         },
-        getItem(key, value, alpineIndex = null) {
+        getItem(key, value, alpineIndex = null, scope = '') {
             const id = Date.now() + Math.floor(Math.random() * 1000000)
             const type = this.getType(value)
+            scope = scope ? `${scope}.${type}` : type
             return `
             <span class="relative py-1 pl-2 ${type === 'string' ? 'flex' : 'inline-block'}">
                 <span class="absolute left-0 -ml-3">
-                    ${this.getGutterAction(id, type, alpineIndex, key, value)}
+                    ${this.getGutterAction(id, type, alpineIndex, key, value, scope)}
                 </span>
                 <span class="text-serif text-property-name-color whitespace-no-wrap mr-2">
-                    <label for="${id}" class="inline-block" style="min-width:1rem">${key}</label>
-                    <span class="text-property-seperator-color bg-property-seperator-bg">:</span>
-                    <span class="px-1 text-xs text-typeof-color bg-typeof-bg">${type}</span>
+                    <label for="${id}" class="inline-block">${key}</label>
+                    <span class="text-property-seperator-color">:</span>
+                    <span
+                        x-show="${type !== 'string'}"
+                        class="px-1 text-xs text-typeof-color bg-typeof-bg">
+                        ${type}
+                    </span>
                 </span>
                 <span
-                    class="relative w-full ${type === 'boolean' ? 'cursor-pointer' : '' } text-value-color bg-value-bg">
+                    class="relative w-full ${type === 'boolean' ? 'cursor-pointer' : '' } text-value-color">
                         <span
                             x-show="editing !== '${alpineIndex}-${key}'"
                             :class="{'absolute': editing === '${alpineIndex}-${key}'}"
                             class="relative z-10">
-                            ${this.getValue(id, type, alpineIndex, key, value)}
+                            ${this.getValue(id, type, alpineIndex, key, value, scope)}
                         </span>
-                        ${this.getEditField(id, type, alpineIndex, key, value)}
+                        ${this.getEditField(id, type, alpineIndex, key, value, scope)}
                 </span>
             </span>`
         },
-        getEditField(id, type, alpineIndex, key, value) {
+        getEditField(id, type, alpineIndex, key, value, scope) {
             switch (type) {
                 case 'string':
                     return `<span
@@ -70,7 +75,7 @@ const Viewer = function() {
                         x-show="editing === '${alpineIndex}-${key}'"
                         style="display:none"
                         contenteditable="true"
-                        class="block relative z-30 p-2 text-string-editor-text bg-string-editor-bg text-sm focus:outline-none"
+                        class="block relative z-30 p-2 text-string-editor-color bg-string-editor-bg text-sm focus:outline-none"
                         :class="{'z-50': editing === '${alpineIndex}-${key}'}"
                         @click.away="editing = ''"
                         @keydown.enter.prevent.stop="
@@ -87,7 +92,7 @@ const Viewer = function() {
             }
             return ''
         },
-        getGutterAction(id, type, alpineIndex, key, value) {
+        getGutterAction(id, type, alpineIndex, key, value, scope) {
             switch (type) {
                 case 'boolean':
                     return `
@@ -98,7 +103,8 @@ const Viewer = function() {
                             :checked="${value}"
                             @change.stop="updateAlpine('boolean', '${alpineIndex}', '${key}', '${value}')">`
                 case 'string':
-                    if (alpineIndex === null) return '' // Probably in an array or object
+                    // Limit to only top level strings
+                    if (scope !== 'string') return ''
                     return `
                         <button
                             id="${id}"
@@ -125,27 +131,33 @@ const Viewer = function() {
                 document.execCommand('selectAll', false, null)
             })
         },
-        getValue(id, type, alpineIndex, key, value) {
+        getValue(id, type, alpineIndex, key, value, scope) {
+            scope = scope ? `${scope}.${type}` : type
             switch (type) {
                 case 'boolean':
                     return value
                 case 'number':
                     return value
                 case 'string':
-                    return `<span
-                        class="editable-content"
-                        @click="openEditorAndSelectText('${alpineIndex}', '${key}')">
-                            ${this.escapeHTML(value)}
-                        </span>`
+                    if (scope === 'string') {
+                        return `<span
+                            class="editable-content"
+                            @click="openEditorAndSelectText('${alpineIndex}', '${key}')">
+                                ${this.escapeHTML('"' + value + '"')}
+                            </span>`
+                    }
+                    return `<span>
+                                ${this.escapeHTML('"' + value + '"')}
+                            </span>`
                 case 'array':
                     if (!value) return value
                     return Object.entries(value).map(([...item]) => {
-                        return `<ul class="pl-4">${this.getItem(item[0], item[1])}</ul>`
+                        return `<div class="pl-2">${this.getItem(item[0], item[1], alpineIndex, scope)}</div>`
                     }).join('')
                 case 'object':
                     if (!value) return value
                     return Object.entries(value).map(([...item]) => {
-                        return `<ul class="pl-4">${this.getItem(item[0], item[1])}</ul>`
+                        return `<div class="pl-2">${this.getItem(item[0], item[1], alpineIndex, scope)}</div>`
                     }).join('')
             }
             return value

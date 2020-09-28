@@ -115,9 +115,9 @@ const Loader = function (Viewer, theme) {
                 x-cloak
                 x-show="open">
                 <div
-                    class="divide-y-2 divide-component-divider space-y-5 -mt-5 pb-5 p-2 overflow-scroll">
+                    class="divide-y-2 divide-component-divider space-y-3 -mt-5 pb-5 p-2 overflow-scroll">
                     <template x-for="(alpine, i) in [...alpines]" :key="i">
-                        <div class="pt-4">
+                        <div class="pt-2">
                             <div class="pl-4 overflow-hidden">
                                 <div x-text="computeTitle(alpine)" class="mb-1 -ml-3 font-extrabold text-component-title"></div>
                                 <template x-if="!getAlpineData(alpine).length"><p class="text-sm">No data found</p></template>
