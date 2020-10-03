@@ -6,6 +6,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.8.0] - 2020-10-03
+### Added
+- Added a theme based on Github (https://primer.style/css/support/color-system)
+- Added a theme based on Hacktoberfest 2020 (http://web.archive.org/web/20200924003932/https://embed-ssl.wistia.com/deliveries/49bd387c40e2c5aada92abdf973bc46d.webp)
+- Added a theme based on Dracula (https://draculatheme.com/contribute)
+### Changed
+- Updated font to Fira Code (Will eventually make font customizable)
+### Fixed
+- Fixed scoping issue where the scope label was updated twice
+
 ## [0.7.0] - 2020-09-28
 ### Added
 - Improved how the script gets injected into the popup

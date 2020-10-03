@@ -1,4 +1,3 @@
-// TODO: Add theme support so that you can override class names instead of being limited to defaults
 module.exports = {
     purge: {
         enabled: true,
@@ -8,6 +7,9 @@ module.exports = {
         ],
     },
     theme: {
+        fontFamily: {
+            mono: ['Fira Code', 'monospace'],
+        },
         extend: {
             colors: {
                 'background': '#1a202c',
@@ -22,11 +24,8 @@ module.exports = {
                 'value-color': '#d8dee9',
                 'string-editor-color': '#000',
                 'string-editor-bg': '#edf2f7',
-                'string-icon-color': '#edf2f7',
+                'icon-color': '#edf2f7',
             },
-            // TODO: spacing, font family,
-            spacing: {
-            }
         }
     },
     variants: {},

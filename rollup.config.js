@@ -1,6 +1,7 @@
 import babel from '@rollup/plugin-babel'
 import commonjs from '@rollup/plugin-commonjs'
 import filesize from 'rollup-plugin-filesize'
+import fs from 'fs'
 import json from '@rollup/plugin-json'
 import postcss from "rollup-plugin-postcss";
 import resolve from '@rollup/plugin-node-resolve'
@@ -44,6 +45,4 @@ const createConfig = (themeName) => ({
   ]
 })
 
-export default [
-  'default',
-].map(createConfig)
+export default fs.readdirSync('themes').map(createConfig)

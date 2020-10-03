@@ -47,7 +47,7 @@ const Viewer = function() {
                 </span>
                 <span class="text-serif text-property-name-color whitespace-no-wrap mr-2">
                     <label for="${id}" class="inline-block">${key}</label>
-                    <span class="text-property-seperator-color">:</span>
+                    <span class="text-property-seperator-color -mx-1.5">:</span>
                     <span
                         x-show="${!['string'].includes(type)}"
                         class="px-1 text-xs text-typeof-color bg-typeof-bg">
@@ -108,7 +108,7 @@ const Viewer = function() {
                         <button
                             id="${id}"
                             @click="openEditorAndSelectText('${alpineIndex}', '${key}')"
-                            class="transition duration-200 w-4 mt-px text-string-icon-color focus:outline-none">
+                            class="transition duration-200 w-4 mt-px text-icon-color focus:outline-none">
                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
                                 <path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z" />
                             </svg>
@@ -131,7 +131,6 @@ const Viewer = function() {
             })
         },
         getValue(id, type, alpineIndex, key, value, scope) {
-            scope = scope ? `${scope}.${type}` : type
             switch (type) {
                 case 'boolean':
                     return value

@@ -70,6 +70,15 @@ const Loader = function (Viewer, theme) {
                 this.windowRef.document.head.appendChild(alpineScript)
             }
 
+            // TODO: This should eventually be settable somehow
+            if (!this.windowRef.document.getElementById('alpine-devtools-font')) {
+                const font = this.windowRef.document.createElement('link')
+                font.id = 'alpine-devtools-font'
+                font.rel = 'stylesheet'
+                font.href = "https://fonts.googleapis.com/css2?family=Fira+Code&display=swap"
+                this.windowRef.document.head.appendChild(font)
+            }
+
             // Add the theme and remove any previous (Can possibly support theme swapping)
             const oldTheme = this.windowRef.document.getElementById('alpine-devtools-theme')
             oldTheme && oldTheme.remove()
@@ -111,7 +120,7 @@ const Loader = function (Viewer, theme) {
         viewerShell() {
             return `
             <div
-                class="flex flex-col justify-between fixed inset-0 bg-background py-2 max-w-screen overflow-hidden"
+                class="flex font-mono flex-col justify-between fixed inset-0 bg-background py-2 max-w-screen overflow-hidden"
                 x-cloak
                 x-show="open">
                 <div
