@@ -42,7 +42,7 @@ const Viewer = function() {
             scope = scope ? `${scope}.${type}` : type
             return `
             <span class="relative py-1 pl-2 ${type === 'string' ? 'flex' : 'inline-block'}">
-                <span class="absolute left-0 -ml-3">
+                <span class="absolute left-0 -ml-3 -mt-px">
                     ${this.getGutterAction(id, type, alpineIndex, key, value, scope)}
                 </span>
                 <span class="text-serif text-property-name-color whitespace-no-wrap mr-2">
