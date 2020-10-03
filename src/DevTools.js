@@ -1,11 +1,11 @@
 const DevTools = {
     start(Loader, Viewer, theme) {
-        this.injectButtonIntoPage()
         window.alpineDevTools = {
             Viewer: Viewer,
             Loader: Loader,
             theme: theme,
         }
+        window.addEventListener('DOMContentLoaded', () => this.injectButtonIntoPage())
     },
     injectButtonIntoPage() {
         // TODO: If packages as a Chrome/FF plugin this can likely be removed entirely!

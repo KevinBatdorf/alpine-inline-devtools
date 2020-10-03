@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.8.1] - 2020-10-03
+### Fixed
+- Waits for `DOMContentLoaded` before injecting the button
+
 ## [0.8.0] - 2020-10-03
 ### Added
 - Added a theme based on Github (https://primer.style/css/support/color-system)

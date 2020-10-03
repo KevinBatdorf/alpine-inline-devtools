@@ -5,12 +5,12 @@
 
     const DevTools = {
       start(Loader, Viewer, theme) {
-        this.injectButtonIntoPage();
         window.alpineDevTools = {
           Viewer: Viewer,
           Loader: Loader,
           theme: theme
         };
+        window.addEventListener('DOMContentLoaded', () => this.injectButtonIntoPage());
       },
 
       injectButtonIntoPage() {
