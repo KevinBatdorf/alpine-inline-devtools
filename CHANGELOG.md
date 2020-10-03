@@ -6,6 +6,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.9.0] - 2020-10-03
+### Added
+- Added live demo page
+- Added version number that you can access from a component
+- Added a way to live swap a theme (probably only useful for the live demo)
+### Changed
+- Updated the default theme spelling to Default to match others
+- Hide functions (maybe a regression as I thought this was already happening)
+### Fixed
+- Updated the color of the text when no data was found
+- Fixed bug where strings would infinitely nest quotes
+
 ## [0.8.1] - 2020-10-03
 ### Fixed
 - Waits for `DOMContentLoaded` before injecting the button

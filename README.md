@@ -10,7 +10,7 @@ Include the following `<script>` tag in the `<head>` of your document (before Al
 ```html
 <!-- To be used during development only -->
 @if (App::environment(['local', 'staging'])) {
-    <script src="https://cdn.jsdelivr.net/gh/kevinbatdorf/alpine-inline-devtools@0.8.0/dist/default.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/kevinbatdorf/alpine-inline-devtools@0.9.0/dist/Default.js"></script>
 @endif
 ```
 
@@ -18,17 +18,17 @@ Include the following `<script>` tag in the `<head>` of your document (before Al
 ### Github
 A light theme based on the Github color palette.
 ```
-<script src="https://cdn.jsdelivr.net/gh/kevinbatdorf/alpine-inline-devtools@0.8.0/dist/Github.min.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/kevinbatdorf/alpine-inline-devtools@0.9.0/dist/Github.js"></script>
 ```
 ### Dracula
 A dark theme based on the Dracula color palette.
 ```
-<script src="https://cdn.jsdelivr.net/gh/kevinbatdorf/alpine-inline-devtools@0.8.0/dist/Dracula.min.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/kevinbatdorf/alpine-inline-devtools@0.9.0/dist/Dracula.js"></script>
 ```
 ### Hacktoberfest 2020
 A dark theme based on the Hacktoberfest 2020 branding.
 ```
-<script src="https://cdn.jsdelivr.net/gh/kevinbatdorf/alpine-inline-devtools@0.8.0/dist/Hacktoberfest2020.min.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/kevinbatdorf/alpine-inline-devtools@0.9.0/dist/Hacktoberfest2020.js"></script>
 ```
 
 ## Wrapped up as a browser extension

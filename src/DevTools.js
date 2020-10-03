@@ -1,6 +1,7 @@
 const DevTools = {
     start(Loader, Viewer, theme) {
         window.alpineDevTools = {
+            version: '0.9.0',
             Viewer: Viewer,
             Loader: Loader,
             theme: theme,
@@ -16,6 +17,8 @@ const DevTools = {
         alpineDevToolsComponent.setAttribute('x-bind:class', '{"alpine-button-devtools-closed" : !open}')
         alpineDevToolsComponent.setAttribute('x-on:click', 'openWindow')
         alpineDevToolsComponent.setAttribute('x-on:open-alpine-devtools.window', 'openWindow')
+        alpineDevToolsComponent.setAttribute('x-on:focus-alpine-devtools.window', 'focusDevTools')
+        alpineDevToolsComponent.setAttribute('x-on:alpine-devtools-switch-theme.window', 'setTheme(event.detail)')
         alpineDevToolsComponent.setAttribute('x-init', '$nextTick(() => { start() })')
         alpineDevToolsComponent.textContent = 'Alpine Devtools'
         alpineDevToolsComponent.style.cssText = "position:fixed!important;bottom:0!important;right:0!important;margin:4px!important;padding:5px 8px!important;border-radius:10px!important;background-color:#1a202c!important;color:#d8dee9!important;font-size:14px!important;outline:0!important;z-index:2147483647!important;min-width:0!important;max-width:130px!important;"
