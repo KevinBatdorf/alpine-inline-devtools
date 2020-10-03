@@ -154,7 +154,7 @@
                             @click="$clipboard(`https://cdn.jsdelivr.net/gh/kevinbatdorf/alpine-inline-devtools/dist/${$component('active-theme').active.name}.js`);$dispatch('something-copied', true)">
                             <p>You got it! It's actually really easy to set up. You don't need a builder or anything. Just add the CDN code to your website and it should work out of the box. You can find more details on the <a class="text-blue-500 hover:text-blue-400 underline" target="_blank" href="https://github.com/KevinBatdorf/alpine-inline-devtools">GitHub page</a> and if you get stuck, just open an issue there.</p>
 
-                            <pre class="mt-16"><code x-text="`https://cdn.jsdelivr.net/gh/kevinbatdorf/alpine-inline-devtools/dist/${$component('active-theme').active.name}.js`"></code></pre>
+                            <pre class="mt-16"><code x-text="`https://cdn.jsdelivr.net/gh/kevinbatdorf/alpine-inline-devtools@${window.alpineDevTools.version.split('.').slice(0,-1).join('.')}.x/dist/${$component('active-theme').active.name}.js`"></code></pre>
                             <div
                                 class="relative"
                                 :style="`color:${$component('active-theme').active.mainColor}`">
