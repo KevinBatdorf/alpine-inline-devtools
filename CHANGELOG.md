@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added live demo page
 - Added version number that you can access from a component
 - Added a way to live swap a theme (probably only useful for the live demo)
+- Added a way to focus the DevTools (also probably only useful for the demo)
 ### Changed
 - Updated the default theme spelling to Default to match others
 - Hide functions (maybe a regression as I thought this was already happening)
