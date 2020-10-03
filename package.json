@@ -8,7 +8,7 @@
     },
     "scripts": {
         "build": "rollup -c",
-        "watch": "concurrently \"rollup -c -w\" \"browser-sync example --ss . -f example dist/default.js\"",
+        "watch": "concurrently \"rollup -c -w\" \"browser-sync example --ss . -f example dist\"",
         "test": "jest",
         "test-watch": "jest --watch"
     },
