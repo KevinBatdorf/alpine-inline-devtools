@@ -132,6 +132,8 @@ const Viewer = function() {
         },
         getValue(id, type, alpineIndex, key, value, scope) {
             switch (type) {
+                case 'function':
+                    return ''
                 case 'boolean':
                     return value
                 case 'number':
@@ -141,11 +143,11 @@ const Viewer = function() {
                         return `<span
                             class="editable-content"
                             @click="openEditorAndSelectText('${alpineIndex}', '${key}')">
-                                ${this.escapeHTML('"' + value + '"')}
+                                "${this.escapeHTML(value)}"
                             </span>`
                     }
                     return `<span>
-                                ${this.escapeHTML('"' + value + '"')}
+                                "${this.escapeHTML(value)}"
                             </span>`
                 case 'array':
                     if (!value) return value
