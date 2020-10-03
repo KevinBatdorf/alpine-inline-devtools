@@ -137,7 +137,6 @@ const Viewer = function() {
                 case 'number':
                     return value
                 case 'string':
-                    console.log(scope)
                     if (scope === 'string') {
                         return `<span
                             class="editable-content"

@@ -13,6 +13,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added a theme based on Dracula (https://draculatheme.com/contribute)
 ### Changed
 - Updated font to Fira Code (Will eventually make font customizable)
+### Fixed
+- Fixed scoping issue where the scope label was updated twice
 
 ## [0.7.0] - 2020-09-28
 ### Added
