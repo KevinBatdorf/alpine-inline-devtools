@@ -1,4 +1,3 @@
-// TODO: Add theme support so that you can override class names instead of being limited to defaults
 module.exports = {
     purge: {
         enabled: true,
