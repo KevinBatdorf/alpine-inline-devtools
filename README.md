@@ -1,7 +1,7 @@
 # Alpine Inline DevTools
 Monitor and update your component state while developing with Alpine JS
 
-![alt text](assets/devtools.gif "Title")
+[Live Demo](https://kevinbatdorf.github.io/alpine-inline-devtools/)
 
 ## Installation
 
@@ -10,26 +10,12 @@ Include the following `<script>` tag in the `<head>` of your document (before Al
 ```html
 <!-- To be used during development only -->
 @if (App::environment(['local', 'staging'])) {
-    <script src="https://cdn.jsdelivr.net/gh/kevinbatdorf/alpine-inline-devtools@0.9.0/dist/Default.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/kevinbatdorf/alpine-inline-devtools@0.9.x/dist/Default.js"></script>
 @endif
 ```
 
 ## Themes
-### Github
-A light theme based on the Github color palette.
-```
-<script src="https://cdn.jsdelivr.net/gh/kevinbatdorf/alpine-inline-devtools@0.9.0/dist/Github.js"></script>
-```
-### Dracula
-A dark theme based on the Dracula color palette.
-```
-<script src="https://cdn.jsdelivr.net/gh/kevinbatdorf/alpine-inline-devtools@0.9.0/dist/Dracula.js"></script>
-```
-### Hacktoberfest 2020
-A dark theme based on the Hacktoberfest 2020 branding.
-```
-<script src="https://cdn.jsdelivr.net/gh/kevinbatdorf/alpine-inline-devtools@0.9.0/dist/Hacktoberfest2020.js"></script>
-```
+Choose from a variety of themes. ([Demo](https://kevinbatdorf.github.io/alpine-inline-devtools/))
 
 ## Wrapped up as a browser extension
 If there's enough interest I will look into packaging this up as a browser extension so you can run it on any page whether in development or not
