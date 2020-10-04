@@ -1,7 +1,7 @@
 const DevTools = {
     start(Loader, Viewer, theme) {
         window.alpineDevTools = {
-            version: '0.9.2',
+            version: '0.10.0',
             Viewer: Viewer,
             Loader: Loader,
             theme: theme,
@@ -13,6 +13,7 @@ const DevTools = {
         const alpineDevToolsComponent = document.createElement('button')
         alpineDevToolsComponent.id = 'alpine-devtools'
         alpineDevToolsComponent.setAttribute('x-data', 'window.alpineDevTools.Loader(window.alpineDevTools.Viewer, window.alpineDevTools.theme)')
+        alpineDevToolsComponent.setAttribute('x-devtools-ignore', '')
         alpineDevToolsComponent.setAttribute('x-show.transition.out.opacity.duration.1000', 'alpines.length && !open')
         alpineDevToolsComponent.setAttribute('x-bind:class', '{"alpine-button-devtools-closed" : !open}')
         alpineDevToolsComponent.setAttribute('x-on:click', 'openWindow')

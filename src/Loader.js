@@ -7,7 +7,7 @@ const Loader = function (Viewer, theme) {
         viewerScript: Viewer,
         theme: theme,
         start() {
-            this.alpines = document.querySelectorAll('[x-data]:not(#alpine-devtools)')
+            this.alpines = document.querySelectorAll('[x-data]:not([x-ignore])')
             if (!this.alpines) return
             this.registerAlpines(this.alpines)
 
@@ -49,12 +49,12 @@ const Loader = function (Viewer, theme) {
             }
         },
         checkIfNewAlpinesWereAddedAndRegisterThem() {
-            const fresh = [...document.querySelectorAll('[x-data]:not(#alpine-devtools)')]
+            const fresh = [...document.querySelectorAll('[x-data]:not([x-devtools-ignore])')]
             const newAlpines = fresh.filter(alpine => {
                 return ![...this.alpines].includes(alpine)
             })
             if (newAlpines) {
-                this.alpines = document.querySelectorAll('[x-data]:not(#alpine-devtools)')
+                this.alpines = document.querySelectorAll('[x-data]:not([x-devtools-ignore])')
                 this.registerAlpines(newAlpines)
             }
         },

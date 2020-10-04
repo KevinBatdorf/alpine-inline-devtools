@@ -6,7 +6,7 @@
     const DevTools = {
       start(Loader, Viewer, theme) {
         window.alpineDevTools = {
-          version: '0.9.2',
+          version: '0.10.0',
           Viewer: Viewer,
           Loader: Loader,
           theme: theme
@@ -19,6 +19,7 @@
         const alpineDevToolsComponent = document.createElement('button');
         alpineDevToolsComponent.id = 'alpine-devtools';
         alpineDevToolsComponent.setAttribute('x-data', 'window.alpineDevTools.Loader(window.alpineDevTools.Viewer, window.alpineDevTools.theme)');
+        alpineDevToolsComponent.setAttribute('x-devtools-ignore', '');
         alpineDevToolsComponent.setAttribute('x-show.transition.out.opacity.duration.1000', 'alpines.length && !open');
         alpineDevToolsComponent.setAttribute('x-bind:class', '{"alpine-button-devtools-closed" : !open}');
         alpineDevToolsComponent.setAttribute('x-on:click', 'openWindow');
@@ -48,7 +49,7 @@
         theme: theme,
 
         start() {
-          this.alpines = document.querySelectorAll('[x-data]:not(#alpine-devtools)');
+          this.alpines = document.querySelectorAll('[x-data]:not([x-ignore])');
           if (!this.alpines) return;
           this.registerAlpines(this.alpines); // If the window is already open, refresh it
 
@@ -95,13 +96,13 @@
         },
 
         checkIfNewAlpinesWereAddedAndRegisterThem() {
-          const fresh = [...document.querySelectorAll('[x-data]:not(#alpine-devtools)')];
+          const fresh = [...document.querySelectorAll('[x-data]:not([x-devtools-ignore])')];
           const newAlpines = fresh.filter(alpine => {
             return ![...this.alpines].includes(alpine);
           });
 
           if (newAlpines) {
-            this.alpines = document.querySelectorAll('[x-data]:not(#alpine-devtools)');
+            this.alpines = document.querySelectorAll('[x-data]:not([x-devtools-ignore])');
             this.registerAlpines(newAlpines);
           }
         },

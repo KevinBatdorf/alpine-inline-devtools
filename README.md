@@ -10,12 +10,16 @@ Include the following `<script>` tag in the `<head>` of your document (before Al
 ```html
 <!-- To be used during development only -->
 @if (App::environment(['local', 'staging'])) {
-    <script src="https://cdn.jsdelivr.net/gh/kevinbatdorf/alpine-inline-devtools@0.9.x/dist/Default.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/kevinbatdorf/alpine-inline-devtools@0.10.x/dist/Default.js"></script>
 @endif
 ```
 
 ## Themes
 Choose from a variety of themes. ([Demo](https://kevinbatdorf.github.io/alpine-inline-devtools/))
+
+## Tips
+- Add `x-devtools-ignore` to instruct the DevTools to ignore specific components.
+- Add `x-title` to set the title (will default to the `aria-label`, `x-id` then `id` otherwise).
 
 ## Wrapped up as a browser extension
 If there's enough interest I will look into packaging this up as a browser extension so you can run it on any page whether in development or not
