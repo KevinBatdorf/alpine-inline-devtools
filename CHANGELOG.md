@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.10.1] - 2020-10-04
+### Fixed
+- Fixed typo `x-ignore` to `x-devtools-ignore`
+
 ## [0.10.0] - 2020-10-04
 ### Fixed
 - Bumped up gutter button padding 1px

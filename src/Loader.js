@@ -7,7 +7,7 @@ const Loader = function (Viewer, theme) {
         viewerScript: Viewer,
         theme: theme,
         start() {
-            this.alpines = document.querySelectorAll('[x-data]:not([x-ignore])')
+            this.alpines = document.querySelectorAll('[x-data]:not([x-devtools-ignore])')
             if (!this.alpines) return
             this.registerAlpines(this.alpines)
 

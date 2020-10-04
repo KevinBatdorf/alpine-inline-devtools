@@ -6,7 +6,7 @@
     const DevTools = {
       start(Loader, Viewer, theme) {
         window.alpineDevTools = {
-          version: '0.10.0',
+          version: '0.10.1',
           Viewer: Viewer,
           Loader: Loader,
           theme: theme
@@ -49,7 +49,7 @@
         theme: theme,
 
         start() {
-          this.alpines = document.querySelectorAll('[x-data]:not([x-ignore])');
+          this.alpines = document.querySelectorAll('[x-data]:not([x-devtools-ignore])');
           if (!this.alpines) return;
           this.registerAlpines(this.alpines); // If the window is already open, refresh it
 
