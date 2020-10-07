@@ -1,6 +1,41 @@
-const Viewer = function() {
+const Viewer = function(type) {
     return {
         editing: '',
+        type: type,
+        setup() {
+            this.$el.innerHTML = `<div
+                class="absolute bg-background border border-container-border flex flex-col font-mono justify-between max-w-screen overflow-scroll py-2 w-full"
+                x-cloak
+                x-show="open">
+                <div
+                    class="divide-y-2 divide-component-divider space-y-3 -mt-5 mb-5 p-2 overflow-scroll">
+                    <template x-for="(alpine, i) in [...alpines]" :key="i">
+                        <div class="pt-2">
+                            <div class="pl-4 overflow-hidden">
+                                <div x-text="computeTitle(alpine)" class="mb-1 -ml-3 font-extrabold text-component-title"></div>
+                                <template x-if="!getAlpineData(alpine).length">
+                                    <p class="text-sm text-value-color">No data found</p>
+                                </template>
+                                <template x-for="[key, value] of getAlpineData(alpine)" :key="key">
+                                    <div
+                                        class="leading-none"
+                                        x-html="getItem(key, value, i)"
+                                        x-show="getType(value) !== 'function'">
+                                    </div>
+                                </template>
+                            </div>
+                        </div>
+                    </template>
+                </div>
+                <div
+                    @click="window.parent.dispatchEvent(new CustomEvent('collapse-devtools', {
+                        bubbles: true,
+                    }))"
+                    x-html="getStatusMessage()"
+                    class="bg-background border-component-divider border-t bottom-0 fixed flex items-center justify-between leading-none left-0 p-1.5 right-0 text-status-text w-full z-50" style="font-size:11px;">
+                </div>
+            </div>`
+        },
         computeTitle(alpine) {
             return alpine.getAttribute('x-title')
                 || alpine.getAttribute('aria-label')
@@ -169,12 +204,15 @@ const Viewer = function() {
             return `
                 <span>Watching ${window.alpines.length} components...</span>
                 <div class="flex items-center justify-end space-x-2">
-                    <a class="hover:text-status-text-hover" title="Follow the developer's Twitter" target="_blank" href="https://twitter.com/kevinbatdorf">
+                    <a @click.stop class="hover:text-status-text-hover" title="Follow the developer's Twitter" target="_blank" href="https://twitter.com/kevinbatdorf">
                         <svg class="stroke-current inline" xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z"></path></svg>
                     </a>
-                    <a class="hover:text-status-text-hover" title="Follow the project on GitHub" target="_blank" href="https://github.com/kevinbatdorf/alpine-inline-devtools">
+                    <a @click.stop class="hover:text-status-text-hover" title="Follow the project on GitHub" target="_blank" href="https://github.com/kevinbatdorf/alpine-inline-devtools">
                         <svg class="stroke-current inline" fill="none" xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path></svg>
                     </a>
+                    <button x-show="type === 'Iframe'" @click.stop="$dispatch('open-alpine-devtools-popup')" class="hover:text-status-text-hover focus:outline-none" title="Open in popup window">
+                        <svg class="stroke-current inline" fill="none" xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="feather feather-square"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect></svg>
+                    </button>
                 </div>
             `
         },

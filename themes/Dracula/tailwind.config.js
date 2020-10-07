@@ -14,6 +14,7 @@ module.exports = {
             colors: {
                 // Color palette: https://draculatheme.com/contribute
                 'background': '#282a36',
+                'container-border': 'transparent',
                 'component-divider': '#44475a',
                 'component-title': '#ff79c6',
                 'status-text': '#6272a4',

@@ -6,6 +6,9 @@ const Loader = function (Viewer, theme) {
         windowRef: null,
         viewerScript: Viewer,
         theme: theme,
+        iframe: null,
+        type: 'Iframe',
+        sessionId : Date.now() + Math.floor(Math.random() * 1000000),
         start() {
             this.alpines = document.querySelectorAll('[x-data]:not([x-devtools-ignore])')
             if (!this.alpines) return
@@ -13,13 +16,14 @@ const Loader = function (Viewer, theme) {
 
             // If the window is already open, refresh it
             if (sessionStorage.getItem('alpine-devtools')) {
-                this.openWindow()
+                this.type = sessionStorage.getItem('alpine-devtools')
+                this[`open${this.type}`]()
                 this.updateAlpines()
             }
         },
         focusDevTools() {
             if (!this.windowRef) {
-                this.openWindow()
+                this[`open${this.type}`]()
             }
             this.windowRef.focus()
         },
@@ -58,11 +62,41 @@ const Loader = function (Viewer, theme) {
                 this.registerAlpines(newAlpines)
             }
         },
-        openWindow() {
+        openIframe() {
+            this.iframe = document.getElementById('alpine-devtools-iframe')
+            if (!this.iframe) {
+                const state = sessionStorage.getItem('alpine-devtools-iframe-state')
+                this.iframe = document.createElement('iframe')
+                this.iframe.id = 'alpine-devtools-iframe'
+                this.iframe.width = 450
+                this.iframe.height = 650
+                this.iframe.setAttribute('x-data', state ? state : '{height: 650, margin: "0.75rem"}')
+                this.iframe.setAttribute('x-devtools-ignore', '')
+                this.iframe.setAttribute('x-on:collapse-devtools.window', 'height = height === 650 ? 27 : 650;margin = margin === "0.75rem" ? "0" : "0.75rem";sessionStorage.setItem("alpine-devtools-iframe-state", `{height: ${height}, margin: "${margin}"}`)')
+                this.iframe.setAttribute('x-bind:style', '`position:fixed;box-shadow:0 25px 50px -12px rgba(0,0,0,.25)!important;bottom:0!important;right:0!important;margin:${margin}!important;background-color:#252f3f!important;height: ${height}px!important`')
+                document.body.appendChild(this.iframe)
+            }
+            this.windowRef = this.iframe.contentWindow
+            this.type = 'Iframe'
+            this.load()
+        },
+        openPopup() {
+            if (this.iframe) {
+                this.iframe.parentNode.removeChild(this.iframe)
+                this.iframe = null
+            }
             this.windowRef = window.open('', 'alpine-devtools', 'width=450, height=650, left=100, top=100')
-            if (!this.windowRef) return sessionStorage.removeItem('alpine-devtools')
+            this.type = 'Popup'
+            this.load()
+        },
+        load() {
+            if (!this.windowRef) {
+                sessionStorage.removeItem('alpine-devtools')
+                this[`open${this.type}`]()
+            }
             // Starting color. Consider some loading animation
             this.windowRef.document.body.style.backgroundColor = '#1a202c'
+            this.windowRef.document.body.style.height = '100%'
             this.windowRef.document.body.innerHTML = ''
             this.windowRef.document.title = 'Alpine DevTools'
             this.windowRef.alpines = this.alpines
@@ -92,14 +126,14 @@ const Loader = function (Viewer, theme) {
             oldScript && oldScript.remove()
             const devtoolsScript = this.windowRef.document.createElement('script')
             devtoolsScript.id = 'devtools-script'
-            devtoolsScript.textContent = `window.devtools = ${this.viewerScript}`
+            devtoolsScript.textContent = `window.Viewer = ${this.viewerScript}`
             this.windowRef.document.head.appendChild(devtoolsScript)
 
-            this.setUpPopupData()
+            this.loadView()
         },
         setTheme(theme) {
             if (!this.windowRef) {
-                this.openWindow()
+                this[`open${this.type}`]()
             }
             this.theme = theme ? theme : this.theme
             // Add the theme and remove any previous (Can possibly support theme swapping)
@@ -110,14 +144,20 @@ const Loader = function (Viewer, theme) {
             devtoolsTheme.textContent = this.theme
             this.windowRef.document.head.appendChild(devtoolsTheme)
         },
-        setUpPopupData() {
+        loadView() {
             const viewer = this.windowRef.document.createElement('div')
             viewer.id = 'alpine-devtools-viewer'
-            viewer.setAttribute('x-data', 'window.devtools(window.alpines)')
-            viewer.innerHTML = this.viewerShell()
+            viewer.setAttribute('x-data', `window.Viewer('${this.type}')`)
+            viewer.setAttribute('x-init', 'setup()')
+            viewer.setAttribute('x-on:open-alpine-devtools-popup.window', `
+                window.parent.dispatchEvent(new CustomEvent('open-alpine-devtools-popup', {
+                    bubbles: true,
+                    event: 'Popup'
+                }))`)
+            viewer.setAttribute('x-init', 'setup()')
 
             // Add the reference to the session so we don't need to reopen the popup everytime
-            sessionStorage.setItem('alpine-devtools', this.windowRef.name)
+            sessionStorage.setItem('alpine-devtools', this.type)
 
             this.open = true
             window.alpineDevTools.open = true
@@ -127,42 +167,11 @@ const Loader = function (Viewer, theme) {
 
             this.windowRef.addEventListener('beforeunload', () => {
                 sessionStorage.removeItem('alpine-devtools')
+                this.type === 'popup' && this.windowRef.close()
                 this.windowRef = null
                 this.open = false
                 window.alpineDevTools.open = false
             })
-        },
-        viewerShell() {
-            return `
-            <div
-                class="flex font-mono flex-col justify-between fixed inset-0 bg-background py-2 max-w-screen overflow-hidden"
-                x-cloak
-                x-show="open">
-                <div
-                    class="divide-y-2 divide-component-divider space-y-3 -mt-5 pb-5 p-2 overflow-scroll">
-                    <template x-for="(alpine, i) in [...alpines]" :key="i">
-                        <div class="pt-2">
-                            <div class="pl-4 overflow-hidden">
-                                <div x-text="computeTitle(alpine)" class="mb-1 -ml-3 font-extrabold text-component-title"></div>
-                                <template x-if="!getAlpineData(alpine).length">
-                                    <p class="text-sm text-value-color">No data found</p>
-                                </template>
-                                <template x-for="[key, value] of getAlpineData(alpine)" :key="key">
-                                    <div
-                                        class="leading-none"
-                                        x-html="getItem(key, value, i)"
-                                        x-show="getType(value) !== 'function'">
-                                    </div>
-                                </template>
-                            </div>
-                        </div>
-                    </template>
-                </div>
-                <div
-                    x-html="getStatusMessage()"
-                    class="flex items-center justify-between border-t border-component-divider text-status-text leading-none mx-2 pt-1.5" style="font-size:11px;">
-                </div>
-            </div>`
         },
     }
 }

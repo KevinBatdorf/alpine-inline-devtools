@@ -14,6 +14,7 @@ module.exports = {
             colors: {
                 // Color palette: https://primer.style/css/support/color-system
                 'background': '#ffffff',
+                'container-border': '#f0f0f0',
                 'component-divider': '#d1d5da',
                 'component-title': '#24292e',
                 'status-text': '#6a737d',
