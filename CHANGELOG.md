@@ -6,6 +6,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.11.1] - 2020-10-07
+### Fixed
+- Fix min height issue for the inner container
+- Fix loading the viewer twice
+
 ## [0.11.0] - 2020-10-07
 ### Added
 - Added true inline DevTools via an iframe (default configuration)

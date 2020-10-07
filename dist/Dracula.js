@@ -6,7 +6,7 @@
     const DevTools = {
       start(Loader, Viewer, theme) {
         window.alpineDevTools = {
-          version: '0.11.0',
+          version: '0.11.1',
           Viewer: Viewer,
           Loader: Loader,
           theme: theme
@@ -57,6 +57,7 @@
         observer: null,
         windowRef: null,
         viewerScript: Viewer,
+        viewer: null,
         theme: theme,
         iframe: null,
         type: 'Iframe',
@@ -68,8 +69,9 @@
           this.registerAlpines(this.alpines); // If the window is already open, refresh it
 
           if (sessionStorage.getItem('alpine-devtools')) {
-            this.type = sessionStorage.getItem('alpine-devtools');
-            this[`open${this.type}`]();
+            this.type = sessionStorage.getItem('alpine-devtools'); // If viewer is already there, only update
+
+            this.viewer || this.load();
             this.updateAlpines();
           }
         },
@@ -158,8 +160,10 @@
           if (!this.windowRef) {
             sessionStorage.removeItem('alpine-devtools');
             this[`open${this.type}`]();
-          } // Starting color. Consider some loading animation
+          } // Add the reference to the session so we don't need to reopen the popup everytime
 
+
+          sessionStorage.setItem('alpine-devtools', this.type); // Starting color. Consider some loading animation
 
           this.windowRef.document.body.style.backgroundColor = '#1a202c';
           this.windowRef.document.body.style.height = '100%';
@@ -211,22 +215,20 @@
         },
 
         loadView() {
-          const viewer = this.windowRef.document.createElement('div');
-          viewer.id = 'alpine-devtools-viewer';
-          viewer.setAttribute('x-data', `window.Viewer('${this.type}')`);
-          viewer.setAttribute('x-init', 'setup()');
-          viewer.setAttribute('x-on:open-alpine-devtools-popup.window', `
+          this.viewer = this.windowRef.document.createElement('div');
+          this.viewer.id = 'alpine-devtools-viewer';
+          this.viewer.setAttribute('x-data', `window.Viewer('${this.type}')`);
+          this.viewer.setAttribute('x-init', 'setup()');
+          this.viewer.setAttribute('x-on:open-alpine-devtools-popup.window', `
                 window.parent.dispatchEvent(new CustomEvent('open-alpine-devtools-popup', {
                     bubbles: true,
                     event: 'Popup'
                 }))`);
-          viewer.setAttribute('x-init', 'setup()'); // Add the reference to the session so we don't need to reopen the popup everytime
-
-          sessionStorage.setItem('alpine-devtools', this.type);
+          this.viewer.setAttribute('x-init', 'setup()');
           this.open = true;
           window.alpineDevTools.open = true;
           setTimeout(() => {
-            this.windowRef.document.body.appendChild(viewer);
+            this.windowRef.document.body.appendChild(this.viewer);
           }, 500);
           this.windowRef.addEventListener('beforeunload', () => {
             sessionStorage.removeItem('alpine-devtools');

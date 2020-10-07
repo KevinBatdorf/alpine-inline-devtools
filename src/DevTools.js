@@ -1,7 +1,7 @@
 const DevTools = {
     start(Loader, Viewer, theme) {
         window.alpineDevTools = {
-            version: '0.11.0',
+            version: '0.11.1',
             Viewer: Viewer,
             Loader: Loader,
             theme: theme,
