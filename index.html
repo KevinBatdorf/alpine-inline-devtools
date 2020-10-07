@@ -145,14 +145,14 @@
                         class="p-4 bg-gray-800"
                         style="min-height:250px;"
                         aria-label="Light Themes"
-                        x-data="{ themes: window.lightThemes }">
+                        x-data="{ themes: window.lightThemes, convertVersion(v) {v = v.split('.');v.pop();v.push('x');return v.join('.')} }">
                             <h2 class="flex justify-between items-end text-xs text-gray-100 uppercase mb-4">
                                 <span class="flex-shrink-0">Light Themes</span>
                             </h2>
                             <div class="space-y-2.5">
                                 <template x-for="theme in themes" :key="theme.name">
                                     <button
-                                        @click="$dispatch('switch-theme', theme.name);$clipboard(`https://cdn.jsdelivr.net/gh/kevinbatdorf/alpine-inline-devtools/dist/${theme.name}.js`);$dispatch('something-copied', true)"
+                                        @click="$dispatch('switch-theme', theme.name);$clipboard(`https://cdn.jsdelivr.net/gh/kevinbatdorf/alpine-inline-devtool@v${convertVersion(window.alpineDevTools.version)}//dist/${$component('active-theme').active.name}.js`);$dispatch('something-copied', true)"
                                         :style="`background-color:${theme.secondaryColor}`"
                                         class=" focus:outline-none relative flex items-center w-full px-2 py-2 rounded-md transition ease-in-out duration-150">
                                         <svg
@@ -168,14 +168,14 @@
                         <div
                             class="mb-4 p-4 bg-gray-100"
                             aria-label="Dark Themes"
-                            x-data="{ themes: window.darkThemes }">
+                            x-data="{ themes: window.darkThemes, convertVersion(v) {v = v.split('.');v.pop();v.push('x');return v.join('.')} }"">
                             <h2 class="flex justify-between items-end text-xs text-gray-800 uppercase mb-4">
                                 <span class="flex-shrink-0">Dark Themes</span>
                             </h2>
                             <div class="space-y-2">
                                 <template x-for="theme in themes" :key="theme.name">
                                     <button
-                                        @click="$dispatch('switch-theme', theme.name);$clipboard(`https://cdn.jsdelivr.net/gh/kevinbatdorf/alpine-inline-devtools/dist/${theme.name}.js`);$dispatch('something-copied', true)"
+                                        @click="$dispatch('switch-theme', theme.name);$clipboard(`https://cdn.jsdelivr.net/gh/kevinbatdorf/alpine-inline-devtools@v${convertVersion(window.alpineDevTools.version)}/dist/${$component('active-theme').active.name}.js`);$dispatch('something-copied', true)"
                                         :style="`background-color:${theme.secondaryColor}`"
                                         class=" focus:outline-none relative flex items-center w-full px-2 py-2 rounded-md transition ease-in-out duration-150">
                                         <svg
