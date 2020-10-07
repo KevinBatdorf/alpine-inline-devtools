@@ -4,7 +4,7 @@ const Viewer = function(type) {
         type: type,
         setup() {
             this.$el.innerHTML = `<div
-                class="absolute bg-background border border-container-border flex flex-col font-mono justify-between max-w-screen overflow-scroll py-2 w-full"
+                class="absolute bg-background border border-container-border flex flex-col font-mono justify-between max-w-screen overflow-scroll py-2 w-full min-h-full"
                 x-cloak
                 x-show="open">
                 <div
