@@ -6,6 +6,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.11.0] - 2020-10-07
+### Added
+- Added true inline DevTools via an iframe (default configuration)
+- Added a button so you can open the iframe in a tab
+- Added a border class for themes
+- If you add your own iframe or button to the page, it will override the default loading
+- The iframe can be collapsable, even between sessions (click the status bar)
+### Changed
+- Simplified the landing page to be more interactive and removed most the text.
+
 ## [0.10.1] - 2020-10-04
 ### Fixed
 - Fixed typo `x-ignore` to `x-devtools-ignore`

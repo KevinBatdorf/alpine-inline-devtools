@@ -1,35 +1,43 @@
 const DevTools = {
     start(Loader, Viewer, theme) {
         window.alpineDevTools = {
-            version: '0.10.1',
+            version: '0.11.0',
             Viewer: Viewer,
             Loader: Loader,
             theme: theme,
         }
-        window.addEventListener('DOMContentLoaded', () => this.injectButtonIntoPage())
+        window.addEventListener('DOMContentLoaded', () => {
+            this.injectDevToolsHandler()
+
+            // A button is on the page already. use that instead
+            const button = document.getElementById('alpine-devtools-button')
+            if (button) {
+                button.addEventListener('click', () => {
+                    window.dispatchEvent(new CustomEvent('open-alpine-devtools-popup', {
+                        bubbles: true,
+                    }))
+                })
+            }
+            if (sessionStorage.getItem('alpine-devtools') !== 'Popup') {
+                setTimeout(() => {
+                    window.dispatchEvent(new CustomEvent('open-alpine-devtools', {
+                        bubbles: true,
+                    }))
+                }, 0)
+            }
+        })
     },
-    injectButtonIntoPage() {
-        // TODO: If packages as a Chrome/FF plugin this can likely be removed entirely!
-        const alpineDevToolsComponent = document.createElement('button')
+    injectDevToolsHandler() {
+        const alpineDevToolsComponent = document.createElement('div')
         alpineDevToolsComponent.id = 'alpine-devtools'
         alpineDevToolsComponent.setAttribute('x-data', 'window.alpineDevTools.Loader(window.alpineDevTools.Viewer, window.alpineDevTools.theme)')
         alpineDevToolsComponent.setAttribute('x-devtools-ignore', '')
-        alpineDevToolsComponent.setAttribute('x-show.transition.out.opacity.duration.1000', 'alpines.length && !open')
-        alpineDevToolsComponent.setAttribute('x-bind:class', '{"alpine-button-devtools-closed" : !open}')
-        alpineDevToolsComponent.setAttribute('x-on:click', 'openWindow')
-        alpineDevToolsComponent.setAttribute('x-on:open-alpine-devtools.window', 'openWindow')
-        alpineDevToolsComponent.setAttribute('x-on:focus-alpine-devtools.window', 'focusDevTools')
-        alpineDevToolsComponent.setAttribute('x-on:alpine-devtools-switch-theme.window', 'setTheme(event.detail)')
+        alpineDevToolsComponent.setAttribute('x-on:open-alpine-devtools.window', 'openIframe()')
+        alpineDevToolsComponent.setAttribute('x-on:open-alpine-devtools-popup.window', 'openPopup()')
+        alpineDevToolsComponent.setAttribute('x-on:focus-alpine-devtools.window', 'focusDevTools()')
+        alpineDevToolsComponent.setAttribute('x-on:alpine-devtools-switch-theme.window', 'setTheme($event.detail)')
         alpineDevToolsComponent.setAttribute('x-init', '$nextTick(() => { start() })')
-        alpineDevToolsComponent.textContent = 'Alpine Devtools'
-        alpineDevToolsComponent.style.cssText = "position:fixed!important;bottom:0!important;right:0!important;margin:4px!important;padding:5px 8px!important;border-radius:10px!important;background-color:#1a202c!important;color:#d8dee9!important;font-size:14px!important;outline:0!important;z-index:2147483647!important;min-width:0!important;max-width:130px!important;"
-
-        // Set some hard styles on the button based on need
-        const styleSheet = document.createElement('style')
-        // Force the opacity when the button is open. I noticed TailwindUI is messing with this otherwise, for example
-        styleSheet.appendChild(document.createTextNode('.alpine-button-devtools-closed{opacity:1!important}'))
-
-        document.head.appendChild(styleSheet)
+        alpineDevToolsComponent.style.cssText = "display:none!important"
         document.body.appendChild(alpineDevToolsComponent)
     }
 }

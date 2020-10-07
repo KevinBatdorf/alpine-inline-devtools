@@ -13,6 +13,7 @@ module.exports = {
         extend: {
             colors: {
                 'background': '#1a202c',
+                'container-border': 'transparent',
                 'component-divider': '#2d3748',
                 'component-title': '#d8dee9',
                 'status-text': '#8ac0cf',
