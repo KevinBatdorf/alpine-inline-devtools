@@ -135,7 +135,7 @@
             this.iframe.height = 650;
             this.iframe.setAttribute('x-data', state ? state : '{height: 650, margin: "0.75rem"}');
             this.iframe.setAttribute('x-devtools-ignore', '');
-            this.iframe.setAttribute('x-on:collapse-devtools.window', 'height = height === 650 ? 27 : 650;margin = margin === "0.75rem" ? "0" : "0.75rem";sessionStorage.setItem("alpine-devtools-iframe-state", `{height: ${height}, margin: "${margin}"}`)');
+            this.iframe.setAttribute('x-on:collapse-devtools.window', 'height = height === 650 ? 25 : 650;margin = margin === "0.75rem" ? "0" : "0.75rem";sessionStorage.setItem("alpine-devtools-iframe-state", `{height: ${height}, margin: "${margin}"}`)');
             this.iframe.setAttribute('x-bind:style', '`position:fixed;box-shadow:0 25px 50px -12px rgba(0,0,0,.25)!important;bottom:0!important;right:0!important;margin:${margin}!important;background-color:#252f3f!important;height: ${height}px!important`');
             document.body.appendChild(this.iframe);
           }
