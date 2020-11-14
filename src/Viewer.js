@@ -189,17 +189,18 @@ const Viewer = function(type) {
             switch (type) {
                 case 'array':
                     return `
-                    <span class="text-xs text-typeof-color bg-typeof-bg">
+                    <span
+                        :class="{
+                            'opacity-0 group-hover:opacity-100': ${scope.endsWith('array')},
+                            'hidden': collapsedArrays.includes('${alpineIndex}:${key}')
+                        }"
+                        class="text-xs text-typeof-color bg-typeof-bg ml-1">
                         <button
                             id="${id}"
                             @click="
                                 updateAlpine('string', '${alpineIndex}', '', '', 'string', '${context}.${value.length}')
                                 openEditorAndSelectText('', '${type}', '${alpineIndex}', '${value.length}', '', '${scope}', '${context}')
                             "
-                            :class="{
-                                'opacity-0 group-hover:opacity-100': ${scope.endsWith('array')},
-                                'hidden': collapsedArrays.includes('${alpineIndex}:${key}')
-                            }"
                             class="transition duration-200 w-4 mt-px text-icon-color focus:outline-none">
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
@@ -211,7 +212,7 @@ const Viewer = function(type) {
             }
         },
         getProperyTypeMessage(id, type, alpineIndex, key, value, scope) {
-            let wrap = (content) => `<span class="px-1 text-xs text-typeof-color bg-typeof-bg">${content}</span>`
+            let wrap = (content) => `<span class="p-1 text-xs text-typeof-color bg-typeof-bg">${content}</span>`
             switch (type) {
                 case 'string':
                     return ''
