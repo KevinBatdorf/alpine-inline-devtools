@@ -2,16 +2,21 @@ const Viewer = function(type) {
     return {
         editing: '',
         type: type,
+        collapsedArrays: [], // TODO: persist this??
         setup() {
             this.$el.innerHTML = `<div
-                class="absolute bg-background border border-container-border flex flex-col font-mono justify-between max-w-screen overflow-scroll py-2 w-full min-h-full"
+                class="absolute bg-background border border-container-border flex flex-col font-mono justify-between max-w-screen py-2 w-full min-h-full"
                 x-cloak
                 x-show="open">
+                <style>
+                    .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+                    .no-scrollbar::-webkit-scrollbar { width: 0px; background: transparent; }
+                </style>
                 <div
-                    class="divide-y-2 divide-component-divider space-y-3 -mt-5 mb-5 p-2 overflow-scroll">
+                    class="divide-y-2 divide-component-divider -mt-5 mb-5 p-2 no-scrollbar">
                     <template x-for="(alpine, i) in [...alpines]" :key="i">
-                        <div class="pt-2">
-                            <div class="pl-4 overflow-hidden">
+                        <div class="">
+                            <div class="pl-4 py-5 overflow-y-hidden no-scrollbar">
                                 <div x-text="computeTitle(alpine)" class="mb-1 -ml-3 font-extrabold text-component-title"></div>
                                 <template x-if="!getAlpineData(alpine).length">
                                     <p class="text-sm text-value-color">No data found</p>
@@ -61,72 +66,81 @@ const Viewer = function(type) {
             }
             return typeof value
         },
-        updateAlpine(type, alpineIndex, key, value) {
-            switch (type) {
+        updateAlpine(type, alpineIndex, key, value, scope, context = '') {
+            let scopes = scope.split('.') // Just focus on the last one
+            switch (scopes[scopes.length - 1]) {
                 case 'boolean':
-                    window.alpines[alpineIndex].__x.$data[key] = (value !== 'true')
-                    break
+                    return this.objectSetDeep(window.alpines[alpineIndex].__x.$data, context, (value !== 'true'))
                 case 'string':
-                    window.alpines[alpineIndex].__x.$data[key] = value
-                    break
+                    return this.objectSetDeep(window.alpines[alpineIndex].__x.$data, context, value)
             }
         },
-        getItem(key, value, alpineIndex = null, scope = '') {
+        getItem(key, value, alpineIndex = null, scope = '', context = '') {
             const id = Date.now() + Math.floor(Math.random() * 1000000)
             const type = this.getType(value)
             scope = scope ? `${scope}.${type}` : type
+            context = context ? `${context}.${key}` : key
             return `
-            <span class="relative py-1 pl-2 ${type === 'string' ? 'flex' : 'inline-block'}">
+            <span class="${this.getItemRowStyling(id, type, alpineIndex, key, value, scope, context)}">
                 <span class="absolute left-0 -ml-3 -mt-px">
-                    ${this.getGutterAction(id, type, alpineIndex, key, value, scope)}
+                    ${this.getGutterAction(id, type, alpineIndex, key, value, scope, context)}
                 </span>
-                <span class="text-serif text-property-name-color whitespace-no-wrap mr-2">
+                <span class="inline-flex items-center text-serif text-property-name-color whitespace-no-wrap group">
                     <label for="${id}" class="inline-block">${key}</label>
-                    <span class="text-property-seperator-color -mx-1.5">:</span>
-                    <span
-                        x-show="${!['string'].includes(type)}"
-                        class="px-1 text-xs text-typeof-color bg-typeof-bg">
-                        ${type}
-                    </span>
+                    <span class="text-property-seperator-color">:</span>
+                    ${this.getProperyTypeMessage(id, type, alpineIndex, key, value, scope, context)}
+                    <!-- Used to add an array item, but could be used for other types -->
+                    ${this.getGutterExtraRight(id, type, alpineIndex, key, value, scope, context)}
                 </span>
                 <span
+                    x-show.transition="!collapsedArrays.includes('${alpineIndex}:${key}')"
                     class="relative w-full ${type === 'boolean' ? 'cursor-pointer' : '' } text-value-color">
                         <span
                             x-show="editing !== '${alpineIndex}-${key}'"
-                            :class="{'absolute': editing === '${alpineIndex}-${key}'}"
+                            :class="{
+                                'absolute': editing === '${alpineIndex}-${key}',
+                                'top-1': '${scope}' === 'array'
+                            }"
                             class="relative z-10">
-                            ${this.getValue(id, type, alpineIndex, key, value, scope)}
+                            ${this.getValue(id, type, alpineIndex, key, value, scope, context)}
                         </span>
-                        ${this.getEditField(id, type, alpineIndex, key, value, scope)}
+                        ${this.getEditField(id, type, alpineIndex, key, value, scope, context)}
                 </span>
             </span>`
         },
-        getEditField(id, type, alpineIndex, key, value, scope) {
+        getItemRowStyling(id, type, alpineIndex, key, value, scope, context = '') {
             switch (type) {
                 case 'string':
-                    return `<span
-                        x-ref="editor-${alpineIndex}-${key}"
-                        x-show="editing === '${alpineIndex}-${key}'"
-                        style="display:none"
-                        contenteditable="true"
-                        class="block relative z-30 p-2 text-string-editor-color bg-string-editor-bg text-sm focus:outline-none"
-                        :class="{'z-50': editing === '${alpineIndex}-${key}'}"
-                        @click.away="editing = ''"
-                        @keydown.enter.prevent.stop="
-                            editing = ''
-                            updateAlpine('${type}', '${alpineIndex}', '${key}', $event.target.textContent.trim());
-                        "
-                        @keydown.escape.stop="
-                            updateAlpine('${type}', '${alpineIndex}', '${key}', $event.target.parentNode.querySelector('.editable-content').textContent.trim());
-                            editing = ''
-                        "
-                        @input.stop="updateAlpine('${type}', '${alpineIndex}', '${key}', $event.target.textContent.trim())">
-                        ${value}
-                    </span>`
+                    return `relative py-1 pl-2 flex items-start`
+                case 'array':
+                    return `relative py-1 pl-2 inline-block`
+            }
+            return `relative py-1 pl-2 inline-block`
+        },
+        getEditField(id, type, alpineIndex, key, value, scope, context = '') {
+            if (scope.endsWith('array.string') || scope === 'string') {
+                return `<span
+                    x-ref="editor-${alpineIndex}-${key}"
+                    x-show="editing === '${alpineIndex}-${key}'"
+                    style="display:none"
+                    contenteditable="true"
+                    class="block relative z-30 p-2 text-string-editor-color bg-string-editor-bg leading-relaxed text-sm focus:outline-none"
+                    :class="{'z-50': editing === '${alpineIndex}-${key}'}"
+                    @click.away="editing = ''"
+                    @keydown.enter.prevent.stop="
+                        editing = ''
+                        updateAlpine('${type}', '${alpineIndex}', '${key}', $event.target.textContent.trim(), '${scope}', '${context}');
+                    "
+                    @keydown.escape.stop="
+                        editing = ''
+                    "
+                    @input.stop="updateAlpine('${type}', '${alpineIndex}', '${key}', $event.target.textContent.trim(), '${scope}', '${context}')">
+                    ${this.escapeHTML(value)}
+                </span>`
             }
             return ''
         },
-        getGutterAction(id, type, alpineIndex, key, value, scope) {
+        getGutterAction(id, type, alpineIndex, key, value, scope, context = '') {
             switch (type) {
                 case 'boolean':
                     return `
@@ -135,37 +149,94 @@ const Viewer = function(type) {
                             style="margin-top:3px;"
                             type="checkbox"
                             :checked="${value}"
-                            @change.stop="updateAlpine('boolean', '${alpineIndex}', '${key}', '${value}')">`
+                            @change.stop="updateAlpine('boolean', '${alpineIndex}', '${key}', '${value}', '${scope}', '${context}')">`
                 case 'string':
-                    // Limit to only top level strings
-                    if (scope !== 'string') return ''
+                    if (!['string', 'array.string'].includes(scope)) return ''
                     return `
                         <button
                             id="${id}"
-                            @click="openEditorAndSelectText('${alpineIndex}', '${key}')"
+                            @click="openEditorAndSelectText('${id}', '${type}', '${alpineIndex}', '${key}', '${value}', '${scope}', '${context}')"
+                            :class="{'opacity-0 group-hover:opacity-100': ${scope.endsWith('array.string')}}"
                             class="transition duration-200 w-4 mt-px text-icon-color focus:outline-none">
                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
                                 <path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z" />
+                            </svg>
+                        </button>`
+                case 'array':
+                    return `
+                        <button
+                            id="${id}"
+                            @click="
+                                const index = collapsedArrays.indexOf('${alpineIndex}:${key}')
+                                if (index === -1) {
+                                    collapsedArrays.push('${alpineIndex}:${key}')
+                                    return
+                                }
+                                collapsedArrays.splice(index, 1)
+                            "
+                            class="transition duration-200 w-4 mt-px text-icon-color focus:outline-none">
+                            <svg
+                                :class="{ 'transform -rotate-90' : collapsedArrays.includes('${alpineIndex}:${key}') }"
+                                xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                                <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
                             </svg>
                         </button>`
                 default:
                     return ''
             }
         },
-        openEditorAndSelectText(alpineIndex, key) {
+        getGutterExtraRight(id, type, alpineIndex, key, value, scope, context = '') {
+            switch (type) {
+                case 'array':
+                    return `
+                    <span class="text-xs text-typeof-color bg-typeof-bg">
+                        <button
+                            id="${id}"
+                            @click="
+                                updateAlpine('string', '${alpineIndex}', '', '', 'string', '${context}.${value.length}')
+                                openEditorAndSelectText('', '${type}', '${alpineIndex}', '${value.length}', '', '${scope}', '${context}')
+                            "
+                            :class="{
+                                'opacity-0 group-hover:opacity-100': ${scope.endsWith('array')},
+                                'hidden': collapsedArrays.includes('${alpineIndex}:${key}')
+                            }"
+                            class="transition duration-200 w-4 mt-px text-icon-color focus:outline-none">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                            </svg>
+                        </button>
+                    </span>`
+                default:
+                    return ''
+            }
+        },
+        getProperyTypeMessage(id, type, alpineIndex, key, value, scope) {
+            let wrap = (content) => `<span class="px-1 text-xs text-typeof-color bg-typeof-bg">${content}</span>`
+            switch (type) {
+                case 'string':
+                    return ''
+                case 'array':
+                    if (this.collapsedArrays.includes(`${alpineIndex}:${key}`)) {
+                        return wrap(`array[${value.length}]`)
+                    }
+                    return wrap`array`
+            }
+            return wrap(type)
+        },
+        openEditorAndSelectText(id, type, alpineIndex, key, value, scope, context) {
             // If the editor is already open and they press the edit icon again, commit the edit
             if (this.editing === `${alpineIndex}-${key}`) {
-                this.updateAlpine('string', alpineIndex, key, this.$refs[`editor-${alpineIndex}-${key}`].textContent.trim())
+                this.updateAlpine('string', alpineIndex, key, this.$refs[`editor-${alpineIndex}-${key}`].textContent.trim(), scope, context)
                 this.editing = ''
                 return
             }
             this.editing = `${alpineIndex}-${key}`
             this.$nextTick(() => {
-                this.$refs[`editor-${alpineIndex}-${key}`].focus()
-                document.execCommand('selectAll', false, null)
+                this.editing && this.$refs[`editor-${alpineIndex}-${key}`].focus()
+                this.editing && document.execCommand('selectAll', false, null)
             })
         },
-        getValue(id, type, alpineIndex, key, value, scope) {
+        getValue(id, type, alpineIndex, key, value, scope, context = '') {
             switch (type) {
                 case 'function':
                     return ''
@@ -174,25 +245,20 @@ const Viewer = function(type) {
                 case 'number':
                     return value
                 case 'string':
-                    if (scope === 'string') {
-                        return `<span
-                            class="editable-content"
-                            @click="openEditorAndSelectText('${alpineIndex}', '${key}')">
-                                "${this.escapeHTML(value)}"
-                            </span>`
-                    }
-                    return `<span>
-                                "${this.escapeHTML(value)}"
-                            </span>`
+                    return `<span
+                        class="editable-content whitespace-no-wrap"
+                        @click="openEditorAndSelectText('${id}', '${type}', '${alpineIndex}', '${key}', '${value}', '${scope}', '${context}')">
+                            "${this.escapeHTML(value)}"
+                        </span>`
                 case 'array':
                     if (!value) return value
                     return Object.entries(value).map(([...item]) => {
-                        return `<div class="pl-2">${this.getItem(item[0], item[1], alpineIndex, scope)}</div>`
+                        return `<div class="group pl-2">${this.getItem(item[0], item[1], alpineIndex, scope, context)}</div>`
                     }).join('')
                 case 'object':
                     if (!value) return value
                     return Object.entries(value).map(([...item]) => {
-                        return `<div class="pl-2">${this.getItem(item[0], item[1], alpineIndex, scope)}</div>`
+                        return `<div class="pl-2">${this.getItem(item[0], item[1], alpineIndex, scope, context)}</div>`
                     }).join('')
             }
             return value
@@ -226,6 +292,23 @@ const Viewer = function(type) {
             div.innerText = html
             return div.innerHTML
         },
+        // Borrowed from https://stackoverflow.com/a/54733755/1437789
+        objectSetDeep(object, path, value) {
+            path = path.toString().match(/[^.[\]]+/g) || []
+            // Iterate all of them except the last one
+            path.slice(0, -1).reduce((a, currentKey, index) => {
+                // If the key does not exist or its value is not an object, create/override the key
+                if (Object(a[currentKey]) !== a[currentKey]) {
+                    // Is the next key a potential array-index?
+                    a[currentKey] = Math.abs(path[index + 1]) >> 0 === +path[index + 1]
+                        ? [] // Yes: assign a new array object
+                        : {} // No: assign a new plain object
+                }
+                return a[currentKey]
+            }, object)[path[path.length - 1]] = value // Finally assign the value to the last key
+            return object
+        }
+
     }
 }
 

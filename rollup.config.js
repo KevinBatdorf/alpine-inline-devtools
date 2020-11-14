@@ -45,4 +45,6 @@ const createConfig = (themeName) => ({
   ]
 })
 
-export default fs.readdirSync('themes').map(createConfig)
+export default process.argv.includes('dev')
+    ? ['Dracula'].map(createConfig)
+    : fs.readdirSync('themes').map(createConfig)

@@ -5,8 +5,16 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+
+## [0.12.0] - 2020-10-07
 ### Fixed
 - Shortened the iframe collapsed height to avoid overflow
+- Removed double scrollbars in Windows.
+- Made strings scrollable instead of a long paragraph.
+### Added
+- You can now edit strings to that are on arrays
+- You can now append strings to arrays
+- You can now collapse arrays (it doesn't persist but I might make that an option later on)
 
 ## [0.11.1] - 2020-10-07
 ### Fixed
