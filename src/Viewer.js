@@ -94,7 +94,7 @@ const Viewer = function(type) {
                 </span>
                 <span
                     x-show.transition="!collapsedArrays.includes('${alpineIndex}:${key}')"
-                    class="relative w-full ${type === 'boolean' ? 'cursor-pointer' : '' } text-value-color">
+                    class="relative w-full text-value-color">
                         <span
                             x-show="editing !== '${alpineIndex}-${key}'"
                             :class="{
@@ -245,6 +245,9 @@ const Viewer = function(type) {
                 case 'number':
                     return value
                 case 'string':
+                    if (!['string', 'array.string'].includes(scope)){
+                        return `<span class="editable-content whitespace-no-wrap">"${this.escapeHTML(value)}"</span>`
+                    }
                     return `<span
                         class="editable-content whitespace-no-wrap"
                         @click="openEditorAndSelectText('${id}', '${type}', '${alpineIndex}', '${key}', '${value}', '${scope}', '${context}')">
