@@ -8,9 +8,14 @@
     },
     "scripts": {
         "build": "rollup -c",
-        "watch": "concurrently \"rollup -c -w\" \"browser-sync ./ -f index.html dist\"",
+        "watch": "concurrently \"rollup -c -w dev\" \"browser-sync --no-open ./ -f index.html example.html dist\"",
         "test": "jest",
         "test-watch": "jest --watch"
+    },
+    "husky": {
+        "hooks": {
+            "pre-commit": "npm run build"
+        }
     },
     "repository": {
         "type": "git",
@@ -41,6 +46,7 @@
         "autoprefixer": "9.8.6",
         "browser-sync": "^2.26.12",
         "concurrently": "^5.3.0",
+        "husky": "^4.3.0",
         "jest": "^26.4.2",
         "jsdom-simulant": "^1.1.2",
         "rollup": "^2.28.2",

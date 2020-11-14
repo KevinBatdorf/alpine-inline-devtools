@@ -10,12 +10,20 @@ Include the following `<script>` tag in the `<head>` of your document (before Al
 ```html
 <!-- To be used during development only -->
 @if (App::environment(['local', 'staging'])) {
-    <script src="https://cdn.jsdelivr.net/gh/kevinbatdorf/alpine-inline-devtools@0.11.x/dist/Default.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/kevinbatdorf/alpine-inline-devtools@0.12.x/dist/Default.js"></script>
 @endif
 ```
 
+## Coming soon
+- Currently from the Dev Tools, you can update strings, booleans, and arrays, but not numbers and objects.
+
 ## Themes
 Choose from a variety of themes. ([Demo](https://kevinbatdorf.github.io/alpine-inline-devtools/))
+
+My current favorite is Dracula:
+```html
+<script src="https://cdn.jsdelivr.net/gh/kevinbatdorf/alpine-inline-devtools@0.12.x/dist/Dracula.js"></script>
+```
 
 ## Tips
 - Add `x-devtools-ignore` to instruct the DevTools to ignore specific components.

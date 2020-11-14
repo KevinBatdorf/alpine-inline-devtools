@@ -1,6 +1,6 @@
 module.exports = {
     purge: {
-        enabled: true,
+        enabled: !process.argv.includes('dev'),
         content: [
             'src/Viewer.js',
             'src/Loader.js',
@@ -30,7 +30,9 @@ module.exports = {
             },
         }
     },
-    variants: {},
+    variants: {
+        opacity: ['responsive', 'hover', 'focus', 'active', 'group-hover'],
+    },
     plugins: [],
     future: {
         removeDeprecatedGapUtilities: true,

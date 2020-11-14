@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+
+<head>
+    <script type="module" src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2.x.x/dist/alpine.min.js"></script>
+    <script nomodule src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2.x.x/dist/alpine-ie11.min.js"></script>
+    <script src="./dist/Dracula.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/@tailwindcss/ui@latest/dist/tailwind-ui.min.css" rel="stylesheet">
+    <style>
+        [x-cloak] { display: none !important; }
+    </style>
+</head>
+
+<body class="">
+<!-- For simplicity, this doesn't need to be a mobile site -->
+<iframe
+    id="alpine-devtools-iframe"
+    x-data
+    x-devtools-ignore
+    x-show="sessionStorage.getItem('alpine-devtools') !== 'Popup'"
+    width="450"
+    height="650"
+    class="border bg-gray-800z-50 fixed top-5 left-5">
+</iframe>
+<div style="min-width:1200px" class="bg-gray-100 min-h-screen flex space-x-10 p-10">
+
+    <div class="" style="min-width:460px">
+    </div>
+    <div>
+        <div x-title="Boolean" x-data="{ 'happy': true }">
+            <div class="mb-10">
+                <h2 class="font-bold">Boolean</h2>
+                <div x-text="happy"></div>
+            </div>
+        </div>
+        <div x-title="Strings"
+            x-data="{
+                stringSimple: 'Facilisis hac leo aliquam rhoncus mi pretium',
+                stringHTML: '<p><span>Facilisis hac leo aliquam rhoncus mi pretium</span></p>',
+                stringParagraph: 'Ligula ridiculus ut himenaeos sapien nam euismod ullamcorper, quis montes aliquam mollis rutrum phasellus nascetur turpis, habitasse blandit eu morbi nibh metus. Fringilla viverra massa urna tempus nam ante est torquent faucibus et, laoreet quisque molestie class interdum phasellus blandit integer lobortis convallis, rutrum parturient fusce cursus sagittis purus inceptos turpis dictumst. In parturient montes convallis pharetra luctus ligula massa habitant bibendum integer, suscipit quam facilisi elementum ut phasellus cum metus hac orci eleifend, proin eu egestas taciti cubilia risus sociis placerat volutpat. Cras condimentum netus penatibus quisque suspendisse ultricies sodales scelerisque leo donec vel, dictumst dignissim metus massa nullam adipiscing justo molestie sociosqu habitasse, duis pretium auctor tincidunt tristique magna aliquam vulputate risus tempus. Risus id cursus nibh sollicitudin montes in conubia laoreet, amet quisque odio turpis lacinia ridiculus faucibus class dui, vivamus placerat nullam nisl auctor leo porttitor. Cubilia fames porttitor ac nascetur volutpat, auctor pellentesque ornare sollicitudin ullamcorper phasellus, dolor class commodo semper. Senectus natoque phasellus curae iaculis maecenas augue ornare morbi tristique congue lobortis at mauris, eget dis quis hendrerit potenti urna porttitor justo gravida tempus ullamcorper libero. Magnis laoreet ornare vulputate interdum neque erat mattis hendrerit penatibus, per non nibh gravida tortor lorem facilisi morbi, eros nascetur justo cum orci ante dolor leo.'
+            }">
+            <div class="mb-10">
+                <h2 class="font-bold">String simple</h2>
+                <div x-text="stringSimple"></div>
+            </div>
+            <div class="mb-10">
+                <h2 class="font-bold">String HTML</h2>
+                <div x-html="stringHTML"></div>
+            </div>
+            <div class="mb-10">
+                <h2 class="font-bold">String Paragraph</h2>
+                <div x-html="stringParagraph"></div>
+            </div>
+        </div>
+        <div x-title="Array"
+            x-data="{
+                fruits: ['apple', 'orange', 'pear', 'durian'],
+            }">
+            <div class="mb-10">
+                <h2 class="font-bold">Fruits</h2>
+                <div x-text="fruits"></div>
+            </div>
+        </div>
+        <div x-title="Objects"
+            x-data="{
+                friends: [
+                    {
+                        name: 'Malcolm Reynolds',
+                        title: 'Captian',
+                    },
+                    {
+                        name: 'Jayne Cobb',
+                        title: 'Hero of Canton',
+                    },
+                ],
+            }">
+            <div class="mb-10">
+                <h2 class="font-bold">Friends</h2>
+                <template x-for="friend in friends">
+                    <div>
+                        <h2 x-text="friend.name"></h2>
+                        <p x-text="friend.title"></p>
+                    </div>
+                </template>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
