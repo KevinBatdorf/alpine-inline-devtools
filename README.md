@@ -10,7 +10,7 @@ Include the following `<script>` tag in the `<head>` of your document (before Al
 ```html
 <!-- To be used during development only -->
 @if (App::environment(['local', 'staging'])) {
-    <script src="https://cdn.jsdelivr.net/gh/kevinbatdorf/alpine-inline-devtools@0.12.x/dist/Default.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/kevinbatdorf/alpine-inline-devtools@0.11.x/dist/Default.js"></script>
 @endif
 ```
 
@@ -22,7 +22,7 @@ Choose from a variety of themes. ([Demo](https://kevinbatdorf.github.io/alpine-i
 
 My current favorite is Dracula:
 ```html
-<script src="https://cdn.jsdelivr.net/gh/kevinbatdorf/alpine-inline-devtools@0.12.x/dist/Dracula.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/kevinbatdorf/alpine-inline-devtools@0.11.x/dist/Dracula.js"></script>
 ```
 
 ## Tips
