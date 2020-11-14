@@ -35,24 +35,24 @@
         "alpinejs": "^2.7"
     },
     "devDependencies": {
-        "@babel/preset-env": "^7.11.5",
+        "@babel/preset-env": "^7.12.1",
         "@rollup/plugin-babel": "^5.2.1",
         "@rollup/plugin-commonjs": "^15.1.0",
         "@rollup/plugin-json": "^4.1.0",
         "@rollup/plugin-node-resolve": "^9.0.0",
-        "@testing-library/dom": "^7.24.3",
-        "@testing-library/jest-dom": "^5.11.4",
-        "alpinejs": "^2.7.0",
+        "@testing-library/dom": "^7.26.6",
+        "@testing-library/jest-dom": "^5.11.6",
+        "alpinejs": "^2.7.3",
         "autoprefixer": "9.8.6",
-        "browser-sync": "^2.26.12",
+        "browser-sync": "^2.26.13",
         "concurrently": "^5.3.0",
         "husky": "^4.3.0",
-        "jest": "^26.4.2",
+        "jest": "^26.6.3",
         "jsdom-simulant": "^1.1.2",
-        "rollup": "^2.28.2",
+        "rollup": "^2.33.2",
         "rollup-plugin-filesize": "^9.0.2",
         "rollup-plugin-postcss": "^3.1.8",
-        "tailwindcss": "^1.8.10"
+        "tailwindcss": "^1.9.6"
     },
     "files": [
         "dist/*",
