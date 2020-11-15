@@ -75,6 +75,9 @@ const Viewer = function(type) {
                     return this.objectSetDeep(window.alpines[alpineIndex].__x.$data, context, value)
             }
         },
+        removeItemFromArray(type, alpineIndex, key, value, scope, context = '') {
+            return this.objectSpliceDeep(window.alpines[alpineIndex].__x.$data, context)
+        },
         getItem(key, value, alpineIndex = null, scope = '', context = '') {
             const id = Date.now() + Math.floor(Math.random() * 1000000)
             const type = this.getType(value)
@@ -82,9 +85,7 @@ const Viewer = function(type) {
             context = context ? `${context}.${key}` : key
             return `
             <span class="${this.getItemRowStyling(id, type, alpineIndex, key, value, scope, context)}">
-                <span class="absolute left-0 -ml-3 -mt-px">
-                    ${this.getGutterAction(id, type, alpineIndex, key, value, scope, context)}
-                </span>
+                ${this.getGutterAction(id, type, alpineIndex, key, value, scope, context)}
                 <span class="inline-flex items-center text-serif text-property-name-color whitespace-no-wrap group">
                     <label for="${id}" class="inline-block">${key}</label>
                     <span class="text-property-seperator-color">:</span>
@@ -111,11 +112,11 @@ const Viewer = function(type) {
         getItemRowStyling(id, type, alpineIndex, key, value, scope, context = '') {
             switch (type) {
                 case 'string':
-                    return `relative py-1 pl-2 flex items-start`
+                    return `relative py-1 pl-1.5 flex items-start`
                 case 'array':
-                    return `relative py-1 pl-2 inline-block`
+                    return `relative py-1 pl-1.5 inline-block`
             }
-            return `relative py-1 pl-2 inline-block`
+            return `relative py-1 pl-1.5 inline-block`
         },
         getEditField(id, type, alpineIndex, key, value, scope, context = '') {
             if (scope.endsWith('array.string') || scope === 'string') {
@@ -141,18 +142,30 @@ const Viewer = function(type) {
             return ''
         },
         getGutterAction(id, type, alpineIndex, key, value, scope, context = '') {
+            const wrap = (content) => `<span class="absolute flex left-0 -ml-3.5 -mt-px">${content}</span>`
+            const wrapTight = (content) => `<span class="absolute flex left-0 -ml-7 -mt-px">${content}</span>`
             switch (type) {
                 case 'boolean':
-                    return `
+                    return wrap(`
                         <input
                             id="${id}"
                             style="margin-top:3px;"
                             type="checkbox"
                             :checked="${value}"
-                            @change.stop="updateAlpine('boolean', '${alpineIndex}', '${key}', '${value}', '${scope}', '${context}')">`
+                            @change.stop="updateAlpine('boolean', '${alpineIndex}', '${key}', '${value}', '${scope}', '${context}')">`)
                 case 'string':
-                    if (!['string', 'array.string'].includes(scope)) return ''
-                    return `
+                    if ('string' !== scope && !scope.endsWith('array.string')) return ''
+                    const deleteButton = `
+                        <button
+                            id="${id}"
+                            @click="removeItemFromArray('${type}', '${alpineIndex}', '${key}', '${value}', '${scope}', '${context}')"
+                            :class="{'opacity-0 group-hover:opacity-100': ${scope.endsWith('array.string')}}"
+                            class="transition duration-200 w-4 mt-px text-icon-color focus:outline-none">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                                <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd" />
+                            </svg>
+                        </button>`
+                    const editButton = `
                         <button
                             id="${id}"
                             @click="openEditorAndSelectText('${id}', '${type}', '${alpineIndex}', '${key}', '${value}', '${scope}', '${context}')"
@@ -162,8 +175,9 @@ const Viewer = function(type) {
                                 <path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z" />
                             </svg>
                         </button>`
+                        return scope.endsWith('array.string') ? wrapTight(deleteButton + editButton) : wrap(editButton)
                 case 'array':
-                    return `
+                    return wrap(`
                         <button
                             id="${id}"
                             @click="
@@ -180,7 +194,7 @@ const Viewer = function(type) {
                                 xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
                                 <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
                             </svg>
-                        </button>`
+                        </button>`)
                 default:
                     return ''
             }
@@ -207,9 +221,11 @@ const Viewer = function(type) {
                             </svg>
                         </button>
                     </span>`
-                default:
+                case 'string':
+                    if (!scope.endsWith('array.string')) return ''
                     return ''
             }
+            return ''
         },
         getProperyTypeMessage(id, type, alpineIndex, key, value, scope) {
             let wrap = (content) => `<span class="p-1 text-xs text-typeof-color bg-typeof-bg">${content}</span>`
@@ -311,8 +327,14 @@ const Viewer = function(type) {
                 return a[currentKey]
             }, object)[path[path.length - 1]] = value // Finally assign the value to the last key
             return object
-        }
-
+        },
+        objectSpliceDeep(object, path) {
+            path = path.toString().match(/[^.[\]]+/g) || []
+            path.slice(0, -1).reduce((a, currentKey, index) => {
+                return a[currentKey]
+            }, object).splice(path[path.length - 1], 1)
+            return object
+        },
     }
 }
 

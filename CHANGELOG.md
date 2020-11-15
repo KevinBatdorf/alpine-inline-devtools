@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - You can now edit strings to that are on arrays
 - You can now append strings to arrays
+- You can now delete items from arrays
 - You can now collapse arrays (it doesn't persist but I might make that an option later on)
 
 ## [0.11.1] - 2020-10-07
